@@ -319,15 +319,15 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
    }
    }
 
-   demo_time = what_time_is_it_now();
+   detection_time = what_time_is_it_now();
 
    while(!demo_done){
 buff_index = (buff_index + 1) %3;
 if(pthread_create(&fetch_thread, 0, fetch_in_thread, 0)) error("Thread creation failed");
 if(pthread_create(&detect_thread, 0, detect_in_thread, 0)) error("Thread creation failed");
 if(!prefix){
-    fps = 1./(what_time_is_it_now() - demo_time);
-    demo_time = what_time_is_it_now();
+    fps = 1./(what_time_is_it_now() - detection_time);
+    detection_time = what_time_is_it_now();
     display_in_thread(0);
 }else{
     char name[256];
