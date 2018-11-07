@@ -15,27 +15,23 @@
 
 #ifdef OPENCV
 
-static char **demo_names;
-static image **demo_alphabet;
-static int demo_classes;
+static char **video_detect_names;
+//static image **video_detect_alphabet;
+static int video_detect_classes;
 
-static network *net;
-static image buff [3];
-static image buff_letter[3];
-static int buff_index = 0;
-static void * cap;
-static float fps = 0;
-static float demo_thresh = 0;
-static float demo_hier = .5;
-static int running = 0;
+static network *video_detect_net;
+static image video_detect_buff [3];
+static image video_detect_buff_letter[3];
+static int video_detect_buff_index = 0;
+static float video_detect_thresh = 0;
+static float video_detect_hier = .5;
 
-static int demo_frame = 3;
-static int demo_index = 0;
-static float **predictions;
-static float *avg;
-static int demo_done = 0;
-static int demo_total = 0;
-float detection_time;
+static int video_detect_frame = 3;
+static int video_detect_index = 0;
+static float **detection_predictions;
+static int video_detect_done = 0;
+static int video_detect_total = 0;
+static float *avg_array;
 
 static float video_width = 0;
 static float video_height = 0;
@@ -48,94 +44,67 @@ struct detection_list_element{
 
 struct detection_list_element * detection_list_head = NULL;
 
-int size_network(network *net)
-{
-    int i;
-    int count = 0;
-    for(i = 0; i < net->n; ++i){
-        layer l = net->layers[i];
-        if(l.type == YOLO || l.type == REGION || l.type == DETECTION){
-            count += l.outputs;
-        }
-    }
-    return count;
-}
-
-void remember_network(network *net)
-{
-    int i;
-    int count = 0;
-    for(i = 0; i < net->n; ++i){
-        layer l = net->layers[i];
-        if(l.type == YOLO || l.type == REGION || l.type == DETECTION){
-            memcpy(predictions[demo_index] + count, net->layers[i].output, sizeof(float) * l.outputs);
-            count += l.outputs;
-        }
-    }
-}
-
-detection *avg_predictions(network *net, int *nboxes)
+detection *avg_detection_predictions(network *net, int *nboxes)
 {
     int i, j;
     int count = 0;
-    fill_cpu(demo_total, 0, avg, 1);
-    for(j = 0; j < demo_frame; ++j){
-        axpy_cpu(demo_total, 1.f/demo_frame, predictions[j], 1, avg, 1);
+    fill_cpu(video_detect_total, 0, avg_array, 1);
+    for(j = 0; j < video_detect_frame; ++j){
+        axpy_cpu(video_detect_total, 1./video_detect_frame, detection_predictions[j], 1, avg_array, 1);
     }
     for(i = 0; i < net->n; ++i){
         layer l = net->layers[i];
         if(l.type == YOLO || l.type == REGION || l.type == DETECTION){
-            memcpy(l.output, avg + count, sizeof(float) * l.outputs);
+            memcpy(l.output, avg_array + count, sizeof(float) * l.outputs);
             count += l.outputs;
         }
     }
-    detection *dets = get_network_boxes(net, buff[0].w, buff[0].h, demo_thresh, demo_hier, 0, 1, nboxes);
+    detection *dets = get_network_boxes(net, video_detect_buff[0].w, video_detect_buff[0].h, video_detect_thresh, video_detect_hier, 0, 1, nboxes);
     return dets;
 }
 
-void *detect_in_thread(void *ptr)
+void *detect_frame_in_thread(void *ptr)
 {
-    running = 1;
     float nms = .4;
 
-    layer l = net->layers[net->n-1];
-    float *X = buff_letter[(buff_index+2)%3].data;
-    network_predict(net, X);
+    layer l = video_detect_net->layers[video_detect_net->n-1];
+    float *X = video_detect_buff_letter[(video_detect_buff_index+2)%3].data;
+    network_predict(video_detect_net, X);
 
-    remember_network(net);
+//    remember_network
+    int i;
+    int count = 0;
+    for(i = 0; i < video_detect_net->n; ++i){
+        layer layer_i = video_detect_net->layers[i];
+        if(layer_i.type == YOLO || layer_i.type == REGION || layer_i.type == DETECTION){
+            memcpy(detection_predictions[video_detect_index] + count, video_detect_net->layers[i].output, sizeof(float) * layer_i.outputs);
+            count += layer_i.outputs;
+        }
+    }
     detection *dets = 0;
     int nboxes = 0;
-    dets = avg_predictions(net, &nboxes);
+    dets = avg_detection_predictions(video_detect_net, &nboxes);
 
     if (nms > 0) do_nms_obj(dets, nboxes, l.classes, nms);
 
-    printf("\033[2J");
-    printf("\033[1;1H");
-    printf("\nFPS:%.1f\n",fps);
-    printf("Objects:\n\n");
     struct detection_list_element * new_detection = malloc(sizeof(struct detection_list_element));
     new_detection->dets = dets;
     new_detection->nboxes = nboxes;
     detection_list_head->next = new_detection;
     detection_list_head = new_detection;
-//    image display = buff[(buff_index+2) % 3];
-//    draw_detections(display, dets, nboxes, demo_thresh, demo_names, demo_alphabet, demo_classes);
-//    free_detections(dets, nboxes);
 
-    demo_index = (demo_index + 1)%demo_frame;
-    running = 0;
     return 0;
 }
 
-void *fetch_in_thread(void *ptr)
+void *fetch_video_frame_in_thread(void *cap)
 {
-    free_image(buff[buff_index]);
-    buff[buff_index] = get_image_from_stream(cap);
-    if(buff[buff_index].data == 0) {
-        demo_done = 1;
+    free_image(video_detect_buff[video_detect_buff_index]);
+    video_detect_buff[video_detect_buff_index] = get_image_from_stream(cap);
+    if(video_detect_buff[video_detect_buff_index].data == 0) {
+        video_detect_done = 1;
         return 0;
     }
-    letterbox_image_into(buff[buff_index], net->w, net->h, buff_letter[buff_index]);
+    letterbox_image_into(video_detect_buff[video_detect_buff_index], video_detect_net->w, video_detect_net->h, video_detect_buff_letter[video_detect_buff_index]);
     return 0;
 }
 
@@ -145,11 +114,11 @@ void detections_to_rois(detection * dets, int det_count, char * rois)
 
     for(i = 0; i < det_count; ++i){
         int class = -1;
-        for(j = 0; j < demo_classes; ++j){
-            if (dets[i].prob[j] > demo_thresh){
+        for(j = 0; j < video_detect_classes; ++j){
+            if (dets[i].prob[j] > video_detect_thresh){
                 class = j;
                 break;
-//                printf("%s: %.0f%%\n", demo_names[j], dets[i].prob[j]*100);
+//                printf("%s: %.0f%%\n", video_detect_names[j], dets[i].prob[j]*100);
             }
         }
         if(class >= 0){
@@ -165,14 +134,15 @@ void detections_to_rois(detection * dets, int det_count, char * rois)
             if(top < 0) top = 0;
             if(top + height > (int)video_height - 1) height = (int)video_height - 1 - top;
 
-            sprintf(rois, "%s%s,%d,%d,%d,%d;", rois, demo_names[class], left, top, width, height);
+            sprintf(rois, "%s%s,%d,%d,%d,%d;", rois, video_detect_names[class], left, top, width, height);
         }
     }
 }
 
 struct write_in_thread_args{
-    struct detection_list_element* list_first_element;
-    char* output_json_file;
+    struct detection_list_element * list_first_element;
+    char * output_json_file;
+    void * cap;
 };
 
 void *write_in_thread(void * raw_args)
@@ -201,11 +171,11 @@ void *write_in_thread(void * raw_args)
 //                  "            \"test_date\": \"30.10.2018 12:19:47\"\n"
 //                  "        },\n"
                   "        \"frames\": [\n",
-                  cvGetCaptureProperty(cap, CV_CAP_PROP_FPS), (int)video_width, (int)video_height);
+                  cvGetCaptureProperty(args->cap, CV_CAP_PROP_FPS), (int)video_width, (int)video_height);
 
     int frame_number = 1;
 
-    while(!demo_done){
+    while(!video_detect_done){
         if(cur_element->next == NULL){
             sleep(1); // if list already empty, sleep one second
         }
@@ -249,15 +219,15 @@ float ms_time()
 
 void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *video_filename, char **names, int classes, float hier, char *json_output_file)
 {
-    image **alphabet = load_alphabet();
-    demo_names = names;
-    demo_alphabet = alphabet;
-    demo_classes = classes;
-    demo_thresh = thresh;
-    demo_hier = hier;
+//    image **alphabet = load_alphabet();
+    video_detect_names = names;
+//    video_detect_alphabet = alphabet;
+    video_detect_classes = classes;
+    video_detect_thresh = thresh;
+    video_detect_hier = hier;
     printf("Video Detector\n");
-    net = load_network(cfgfile, weightfile, 0);
-    set_batch_network(net, 1);
+    video_detect_net = load_network(cfgfile, weightfile, 0);
+    set_batch_network(video_detect_net, 1);
     pthread_t detect_thread;
     pthread_t fetch_thread;
     pthread_t write_thread;
@@ -269,15 +239,20 @@ void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *
     srand(2222222);
 
     int i;
-    demo_total = size_network(net);
-    predictions = calloc(demo_frame, sizeof(float*));
-    for (i = 0; i < demo_frame; ++i){
-        predictions[i] = calloc(demo_total, sizeof(float));
+    for(i = 0; i < video_detect_net->n; ++i){
+        layer l = video_detect_net->layers[i];
+        if(l.type == YOLO || l.type == REGION || l.type == DETECTION){
+            video_detect_total += l.outputs;
+        }
     }
-    avg = calloc(demo_total, sizeof(float));
-
+    detection_predictions = calloc(video_detect_frame, sizeof(float*));
+    for (i = 0; i < video_detect_frame; ++i){
+        detection_predictions[i] = calloc(video_detect_total, sizeof(float));
+    }
+    avg_array = calloc(video_detect_total, sizeof(float));
+    
     printf("video file: %s\n", video_filename);
-    cap = open_video_stream(video_filename, 0, 0, 0, 0);
+    void * cap = open_video_stream(video_filename, 0, 0, 0, 0);
 
     if(!cap) error("Couldn't connect to webcam.\n");
     video_height = (float)cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_HEIGHT);
@@ -286,25 +261,26 @@ void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *
     struct write_in_thread_args writer_args;
     writer_args.list_first_element = detection_list_head;
     writer_args.output_json_file = json_output_file;
+    writer_args.cap = cap
     if(pthread_create(&write_thread, 0, write_in_thread, &writer_args)) error("Thread creation failed");
 
-    buff[0] = get_image_from_stream(cap);
-    buff[1] = copy_image(buff[0]);
-    buff[2] = copy_image(buff[0]);
-    buff_letter[0] = letterbox_image(buff[0], net->w, net->h);
-    buff_letter[1] = letterbox_image(buff[0], net->w, net->h);
-    buff_letter[2] = letterbox_image(buff[0], net->w, net->h);
+    video_detect_buff[0] = get_image_from_stream(cap);
+    video_detect_buff[1] = copy_image(video_detect_buff[0]);
+    video_detect_buff[2] = copy_image(video_detect_buff[0]);
+    video_detect_buff_letter[0] = letterbox_image(video_detect_buff[0], video_detect_net->w, video_detect_net->h);
+    video_detect_buff_letter[1] = letterbox_image(video_detect_buff[0], video_detect_net->w, video_detect_net->h);
+    video_detect_buff_letter[2] = letterbox_image(video_detect_buff[0], video_detect_net->w, video_detect_net->h);
 
     int count = 0;
-    detection_time = ms_time();
+    float detection_time = ms_time();
 
-    while(!demo_done){
-        buff_index = (buff_index + 1) %3;
-        if(pthread_create(&fetch_thread, 0, fetch_in_thread, 0)) error("Thread creation failed");
-        if(pthread_create(&detect_thread, 0, detect_in_thread, 0)) error("Thread creation failed");
+    while(!video_detect_done){
+        video_detect_buff_index = (video_detect_buff_index + 1) %3;
+        if(pthread_create(&fetch_thread, 0, fetch_video_frame_in_thread, cap)) error("Thread creation failed");
+        if(pthread_create(&detect_thread, 0, detect_frame_in_thread, 0)) error("Thread creation failed");
 
         float cur_time = ms_time();
-        fps = 1.f/(cur_time - detection_time);
+        printf("\rFPS:%.1f",1.f/(cur_time - detection_time));
         detection_time = cur_time;
 
         pthread_join(fetch_thread, 0);
@@ -312,14 +288,14 @@ void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *
         ++count;
     }
 
-    printf("Finishing writing json file");
+    printf("\nFinishing writing json file\n");
     pthread_join(write_thread, 0);
 
     free_detections(detection_list_head->dets, detection_list_head->nboxes);
 }
 
 #else
-void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const char *filename, char **names, int classes, int delay, char *prefix, int avg, float hier, int w, int h, int frames, int fullscreen)
+void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const char *filename, char **names, int classes, int delay, char *prefix, int avg_array, float hier, int w, int h, int frames, int fullscreen)
 {
     fprintf(stderr, "Demo needs OpenCV for webcam images.\n");
 }
