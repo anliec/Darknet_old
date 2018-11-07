@@ -217,12 +217,14 @@ float ms_time()
     return (float)time.tv_sec + (float)time.tv_usec * .000001f;
 }
 
-void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *video_filename, char **names, int classes, float hier, char *json_output_file)
+void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *video_filename,
+        char *classes_names_file, int classes_count, float hier, char *json_output_file)
 {
+    video_detect_names = get_labels(classes_names_file);
 //    image **alphabet = load_alphabet();
-    video_detect_names = names;
+//    video_detect_names = names;
 //    video_detect_alphabet = alphabet;
-    video_detect_classes = classes;
+    video_detect_classes = classes_count;
     video_detect_thresh = thresh;
     video_detect_hier = hier;
     printf("Video Detector\n");
