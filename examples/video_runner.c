@@ -8,5 +8,5 @@ int main(int argc, char** argv){
         exit(1);
     }
     int classes_count = atoi(argv[5]);
-    detect_in_video(argv[1], argv[2], argv[3], argv[4], classes_count, argv[6]);
+    detect_in_video(argv[1], argv[2], 0.5, argv[3], argv[4], classes_count, 0.5, argv[6]);
 }
