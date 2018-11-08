@@ -171,7 +171,7 @@ void *write_in_thread(void * raw_args)
 //                  "            \"test_date\": \"30.10.2018 12:19:47\"\n"
 //                  "        },\n"
                   "        \"frames\": [\n",
-                  cvGetCaptureProperty(args->cap, CV_CAP_PROP_FPS), (int)video_width, (int)video_height);
+            get_cap_property(args->cap, CV_CAP_PROP_FPS), (int)video_width, (int)video_height);
 
     int frame_number = 1;
 
@@ -256,9 +256,9 @@ void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *
     printf("video file: %s\n", video_filename);
     void * cap = open_video_stream(video_filename, 0, 0, 0, 0);
 
-    if(!cap) error("Couldn't connect to webcam.\n");
-    video_height = (float)cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_HEIGHT);
-    video_width = (float)cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_WIDTH);
+    if(!cap) error("Couldn't read video file.\n");
+    video_height = (float)get_cap_property(cap, CV_CAP_PROP_FRAME_HEIGHT);
+    video_width = (float)get_cap_property(cap, CV_CAP_PROP_FRAME_WIDTH);
 
     struct write_in_thread_args writer_args;
     writer_args.list_first_element = detection_list_head;
@@ -294,6 +294,7 @@ void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *
     pthread_join(write_thread, 0);
 
     free_detections(detection_list_head->dets, detection_list_head->nboxes);
+    close_video_stream(cap);
 }
 
 #else

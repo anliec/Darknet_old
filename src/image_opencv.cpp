@@ -130,6 +130,19 @@ void make_window(char *name, int w, int h, int fullscreen)
     }
 }
 
+double get_cap_property(void * p, int property)
+{
+    auto cap = (VideoCapture *)p;
+    return cap->get(property);
+}
+
+void close_video_stream(void * p)
+{
+    auto cap = (VideoCapture *)p;
+    cap->release();
+}
+
+
 }
 
 #endif
