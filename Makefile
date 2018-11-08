@@ -76,7 +76,7 @@ all: obj backup results $(SLIB) $(ALIB) $(EXEC)
 $(EXEC): $(EXECOBJ) $(ALIB)
 	$(CC) $(COMMON) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(ALIB)
 
-video_runner: $(OBJDIR)/video_runner.o $(ALIB)
+video_runner: $(OBJDIR)video_runner.o $(ALIB)
 	$(CC) $(COMMON) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(ALIB)
 
 $(ALIB): $(OBJS)
