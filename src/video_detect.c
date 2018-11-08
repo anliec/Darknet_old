@@ -210,13 +210,13 @@ void *write_in_thread(void * raw_args)
     fclose(json);
 }
 
-float ms_time()
+int ms_time()
 {
     struct timeval time;
     if (gettimeofday(&time,NULL)){
         return 0;
     }
-    return (float)time.tv_sec + (float)time.tv_usec * .000001f;
+    return (int)time.tv_sec * 1000000 + (int)time.tv_usec;
 }
 
 void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *video_filename,
@@ -276,15 +276,15 @@ void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *
     video_detect_buff_letter[2] = letterbox_image(video_detect_buff[0], video_detect_net->w, video_detect_net->h);
 
     int count = 0;
-    float detection_time = ms_time();
+    int detection_time = ms_time();
 
     while(!video_detect_done){
         video_detect_buff_index = (video_detect_buff_index + 1) %3;
         if(pthread_create(&fetch_thread, 0, fetch_video_frame_in_thread, cap)) error("Thread creation failed");
         if(pthread_create(&detect_thread, 0, detect_frame_in_thread, 0)) error("Thread creation failed");
 
-        float cur_time = ms_time();
-        printf("\rFPS:%.1f",1.f/(cur_time - detection_time));
+        int cur_time = ms_time();
+        printf("\rFPS:%.2f",1e6/(double)(cur_time - detection_time));
         detection_time = cur_time;
 
         pthread_join(fetch_thread, 0);
