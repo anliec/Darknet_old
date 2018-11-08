@@ -799,6 +799,8 @@ size_t rand_size_t();
 float rand_normal();
 float rand_uniform(float min, float max);
 
+extern void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *video_filename, char *classes_names_file, int classes_count, float hier, char *json_output_file);
+
 #ifdef __cplusplus
 }
 #endif
