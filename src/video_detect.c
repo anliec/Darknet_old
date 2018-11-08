@@ -88,6 +88,7 @@ void *detect_frame_in_thread(void *ptr)
     if (nms > 0) do_nms_obj(dets, nboxes, l.classes, nms);
 
     struct detection_list_element * new_detection = malloc(sizeof(struct detection_list_element));
+    new_detection->next = NULL;
     new_detection->dets = dets;
     new_detection->nboxes = nboxes;
     detection_list_head->next = new_detection;
