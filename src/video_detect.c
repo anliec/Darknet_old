@@ -26,7 +26,7 @@ static int video_detect_buff_index = 0;
 static float video_detect_thresh = 0;
 static float video_detect_hier = .5;
 
-static int video_detect_frame = 3;
+const static int video_detect_frame = 3;
 static int video_detect_index = 0;
 static float **detection_predictions;
 static int video_detect_done = 0;
@@ -50,7 +50,7 @@ detection *avg_detection_predictions(network *net, int *nboxes)
     int count = 0;
     fill_cpu(video_detect_total, 0, avg_array, 1);
     for(j = 0; j < video_detect_frame; ++j){
-        axpy_cpu(video_detect_total, 1./video_detect_frame, detection_predictions[j], 1, avg_array, 1);
+        axpy_cpu(video_detect_total, 1.f/video_detect_frame, detection_predictions[j], 1, avg_array, 1);
     }
     for(i = 0; i < net->n; ++i){
         layer l = net->layers[i];
@@ -93,6 +93,7 @@ void *detect_frame_in_thread(void *ptr)
     detection_list_head->next = new_detection;
     detection_list_head = new_detection;
 
+    video_detect_index = (video_detect_index + 1) % video_detect_frame;
     return 0;
 }
 

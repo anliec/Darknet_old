@@ -69,7 +69,7 @@ detection *avg_predictions(network *net, int *nboxes)
     int count = 0;
     fill_cpu(demo_total, 0, avg, 1);
     for(j = 0; j < demo_frame; ++j){
-        axpy_cpu(demo_total, 1./demo_frame, predictions[j], 1, avg, 1);
+        axpy_cpu(demo_total, 1.f/demo_frame, predictions[j], 1, avg, 1);
     }
     for(i = 0; i < net->n; ++i){
         layer l = net->layers[i];
