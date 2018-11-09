@@ -110,7 +110,7 @@ void *fetch_video_frame_in_thread(void *cap)
     return 0;
 }
 
-void detections_to_rois(detection * dets, int det_count, char * rois)
+void detections_to_rois(detection * dets, int det_count, char * rois, char * csv, int frame_id)
 {
     int i,j;
 
@@ -120,7 +120,6 @@ void detections_to_rois(detection * dets, int det_count, char * rois)
             if (dets[i].prob[j] > video_detect_thresh){
                 class = j;
                 break;
-//                printf("%s: %.0f%%\n", video_detect_names[j], dets[i].prob[j]*100);
             }
         }
         if(class >= 0){
@@ -137,6 +136,7 @@ void detections_to_rois(detection * dets, int det_count, char * rois)
             if(top + height > (int)video_height - 1) height = (int)video_height - 1 - top;
 
             sprintf(rois, "%s%s,%d,%d,%d,%d;", rois, video_detect_names[class], left, top, width, height);
+            sprintf(csv, "%s%07d.jpg,%s,%d,%d,%d,%d,%f\n", csv, frame_id, video_detect_names[class], left, top, width, height, dets[i].prob[j]);
         }
     }
 }
@@ -151,6 +151,10 @@ void *write_in_thread(void * raw_args)
 {
     struct write_in_thread_args * args = raw_args;
     struct detection_list_element * cur_element = args->list_first_element;
+    char csv_out_file[256] = "";
+    strcpy(csv_out_file, args->output_json_file);
+    strcat(csv_out_file, ".csv");
+    FILE *csv = fopen(csv_out_file, "w");
     FILE *json = fopen(args->output_json_file, "w");
     if(json == NULL){
         printf("Cannot open file: '%s' !\n", args->output_json_file);
@@ -190,7 +194,8 @@ void *write_in_thread(void * raw_args)
             free(old_element);
 
             char rois[512] = "";
-            detections_to_rois(cur_element->dets, cur_element->nboxes, rois);
+            char csv_text[1024] = "";
+            detections_to_rois(cur_element->dets, cur_element->nboxes, rois, csv_text, frame_number);
 
             if(frame_number != 1){
                 fprintf(json, ",\n");
@@ -199,6 +204,8 @@ void *write_in_thread(void * raw_args)
                           "                \"frame_number\": \"%07d.jpg\",\n"
                           "                \"RoIs\": \"%s\"\n"
                           "            }", frame_number, rois);
+
+            fprintf(csv, "%s", csv_text);
 
             frame_number++;
         }
