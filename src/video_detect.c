@@ -160,6 +160,12 @@ void *write_in_thread(void * raw_args)
         printf("Cannot open file: '%s' !\n", args->output_json_file);
         exit(1);
     }
+    if(csv == NULL){
+        printf("Cannot open file: '%s' !\n", csv_out_file);
+        exit(1);
+    }
+    // print csv header to file
+    fprintf(csv, "image_id,sign_class,X,Y,W,H,confidence_level\n");
 
     // write basic header:
     fprintf(json, "{\n"
