@@ -224,9 +224,6 @@ void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *
         char *classes_names_file, int classes_count, float hier, char *json_output_file)
 {
     video_detect_names = get_labels(classes_names_file);
-//    image **alphabet = load_alphabet();
-//    video_detect_names = names;
-//    video_detect_alphabet = alphabet;
     video_detect_classes = classes_count;
     video_detect_thresh = thresh;
     video_detect_hier = hier;
@@ -296,8 +293,16 @@ void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *
     printf("\nFinishing writing json file\n");
     pthread_join(write_thread, 0);
 
+    // clean memory
     free_detections(detection_list_head->dets, detection_list_head->nboxes);
     close_video_stream(cap);
+    free(avg_array);
+    for (i = 0; i < video_detect_frame; ++i){
+        free(detection_predictions[i]);
+    }
+    free(detection_predictions);
+    free(detection_list_head);
+    free_network(video_detect_net);
 }
 
 #else
