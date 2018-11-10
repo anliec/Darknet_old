@@ -59,7 +59,7 @@ detection *avg_detection_predictions(network *net, int *nboxes)
             count += l.outputs;
         }
     }
-    detection *dets = get_network_boxes(net, video_detect_buff[0].w, video_detect_buff[0].h, video_detect_thresh, video_detect_hier, 0, 1, nboxes);
+    detection *dets = get_network_boxes(net, (int)video_width, (int)video_height, video_detect_thresh, video_detect_hier, 0, 1, nboxes);
     return dets;
 }
 
@@ -185,7 +185,7 @@ void *write_in_thread(void * raw_args)
                   "        \"frames\": [\n",
             get_cap_property(args->cap, CV_CAP_PROP_FPS), (int)video_width, (int)video_height);
 
-    int frame_number = 1;
+    int frame_number = 0;
 
     while(!video_detect_done){
         if(cur_element->next == NULL){
