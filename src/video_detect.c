@@ -203,7 +203,7 @@ void *write_in_thread(void * raw_args)
             char csv_text[1024] = "";
             detections_to_rois(cur_element->dets, cur_element->nboxes, rois, csv_text, frame_number);
 
-            if(frame_number != 1){
+            if(frame_number != 0){
                 fprintf(json, ",\n");
             }
             fprintf(json, "            {\n"
@@ -216,7 +216,7 @@ void *write_in_thread(void * raw_args)
             frame_number++;
         }
     }
-    fprintf(json, "        ]\n"
+    fprintf(json, "\n        ]\n"
                   "    }\n"
                   "}");
 
