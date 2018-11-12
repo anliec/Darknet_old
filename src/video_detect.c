@@ -234,14 +234,15 @@ int ms_time()
 }
 
 void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *video_filename,
-        char *classes_names_file, int classes_count, float hier, char *json_output_file)
+        char *classes_names_file, int classes_count, float hier, char *json_output_file, int decrypt_weights)
 {
     video_detect_names = get_labels(classes_names_file);
     video_detect_classes = classes_count;
     video_detect_thresh = thresh;
     video_detect_hier = hier;
     printf("Video Detector\n");
-    video_detect_net = load_network(cfgfile, weightfile, 0);
+    video_detect_net = load_network(cfgfile, NULL, 0);
+    load_weights_encrypt(video_detect_net, weightfile, decrypt_weights);
     set_batch_network(video_detect_net, 1);
     pthread_t detect_thread;
     pthread_t fetch_thread;
