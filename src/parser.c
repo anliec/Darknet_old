@@ -1146,7 +1146,7 @@ void load_convolutional_weights(layer l, FILE *fp)
 
 #define ENCRYPTION_FUNCTION_ARRAY_LENGTH 4
 
-float divide_by_two(float v){ return v / 2.0f;}
+float divide_by_two(float v) { return v / 2.0f;}
 float multiply_by_two(float v){ return v * 2.0f;}
 float unity(float v){ return v;}
 float change_sign(float v){ return -v;}
@@ -1160,7 +1160,7 @@ void write_encrypt_float(float * array, unsigned array_length, FILE * fp)
     float encrypted_array[array_length];
     for(unsigned i=0 ; i<array_length ; ++i)
     {
-        encrypted_array[i] = ENCRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH](array[i]);
+        encrypted_array[i] = (*ENCRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH])(array[i]);
     }
     fwrite(encrypted_array, sizeof(float), array_length, fp);
 }
@@ -1170,7 +1170,7 @@ void read_encrypt_float(float * array, unsigned array_length, FILE * fp)
     fread(array, sizeof(float), array_length, fp);
     for(unsigned i=0 ; i<array_length ; ++i)
     {
-        array[i] = DECRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH](array[i]);
+        array[i] = (*DECRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH])(array[i]);
     }
 }
 
