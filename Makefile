@@ -1,6 +1,6 @@
-GPU=1
-CUDNN=1
-OPENCV=1
+GPU=0
+CUDNN=0
+OPENCV=0
 OPENMP=0
 DEBUG=0
 
@@ -77,6 +77,12 @@ $(EXEC): $(EXECOBJ) $(ALIB)
 	$(CC) $(COMMON) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(ALIB)
 
 video_runner: $(OBJDIR)video_runner.o $(ALIB)
+	$(CC) $(COMMON) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(ALIB)
+
+encryptor: $(OBJDIR)encrypt_weights.o $(ALIB)
+	$(CC) $(COMMON) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(ALIB)
+
+decryptor: $(OBJDIR)decrypt_weights.o $(ALIB)
 	$(CC) $(COMMON) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(ALIB)
 
 $(ALIB): $(OBJS)

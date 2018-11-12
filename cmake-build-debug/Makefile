@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named Darknet
+
+# Build rule for target.
+Darknet: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 Darknet
+.PHONY : Darknet
+
+# fast build rule for target.
+Darknet/fast:
+	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/build
+.PHONY : Darknet/fast
+
+#=============================================================================
 # Target rules for targets named Video_runner
 
 # Build rule for target.
@@ -124,17 +137,30 @@ Video_runner/fast:
 .PHONY : Video_runner/fast
 
 #=============================================================================
-# Target rules for targets named Darknet
+# Target rules for targets named encryptor
 
 # Build rule for target.
-Darknet: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 Darknet
-.PHONY : Darknet
+encryptor: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 encryptor
+.PHONY : encryptor
 
 # fast build rule for target.
-Darknet/fast:
-	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/build
-.PHONY : Darknet/fast
+encryptor/fast:
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/build
+.PHONY : encryptor/fast
+
+#=============================================================================
+# Target rules for targets named decryptor
+
+# Build rule for target.
+decryptor: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 decryptor
+.PHONY : decryptor
+
+# fast build rule for target.
+decryptor/fast:
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/build
+.PHONY : decryptor/fast
 
 examples/darknet.o: examples/darknet.c.o
 
@@ -162,6 +188,63 @@ examples/darknet.s: examples/darknet.c.s
 examples/darknet.c.s:
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/examples/darknet.c.s
 .PHONY : examples/darknet.c.s
+
+examples/decrypt_weights.o: examples/decrypt_weights.c.o
+
+.PHONY : examples/decrypt_weights.o
+
+# target to build an object file
+examples/decrypt_weights.c.o:
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/examples/decrypt_weights.c.o
+.PHONY : examples/decrypt_weights.c.o
+
+examples/decrypt_weights.i: examples/decrypt_weights.c.i
+
+.PHONY : examples/decrypt_weights.i
+
+# target to preprocess a source file
+examples/decrypt_weights.c.i:
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/examples/decrypt_weights.c.i
+.PHONY : examples/decrypt_weights.c.i
+
+examples/decrypt_weights.s: examples/decrypt_weights.c.s
+
+.PHONY : examples/decrypt_weights.s
+
+# target to generate assembly for a file
+examples/decrypt_weights.c.s:
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/examples/decrypt_weights.c.s
+.PHONY : examples/decrypt_weights.c.s
+
+examples/encrypt_weights.o: examples/encrypt_weights.c.o
+
+.PHONY : examples/encrypt_weights.o
+
+# target to build an object file
+examples/encrypt_weights.c.o:
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/examples/encrypt_weights.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/examples/encrypt_weights.c.o
+.PHONY : examples/encrypt_weights.c.o
+
+examples/encrypt_weights.i: examples/encrypt_weights.c.i
+
+.PHONY : examples/encrypt_weights.i
+
+# target to preprocess a source file
+examples/encrypt_weights.c.i:
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/examples/encrypt_weights.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/examples/encrypt_weights.c.i
+.PHONY : examples/encrypt_weights.c.i
+
+examples/encrypt_weights.s: examples/encrypt_weights.c.s
+
+.PHONY : examples/encrypt_weights.s
+
+# target to generate assembly for a file
+examples/encrypt_weights.c.s:
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/examples/encrypt_weights.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/examples/encrypt_weights.c.s
+.PHONY : examples/encrypt_weights.c.s
 
 examples/video_runner.o: examples/video_runner.c.o
 
@@ -196,8 +279,10 @@ src/activation_layer.o: src/activation_layer.c.o
 
 # target to build an object file
 src/activation_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/activation_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/activation_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/activation_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/activation_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/activation_layer.c.o
 .PHONY : src/activation_layer.c.o
 
 src/activation_layer.i: src/activation_layer.c.i
@@ -206,8 +291,10 @@ src/activation_layer.i: src/activation_layer.c.i
 
 # target to preprocess a source file
 src/activation_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/activation_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/activation_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/activation_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/activation_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/activation_layer.c.i
 .PHONY : src/activation_layer.c.i
 
 src/activation_layer.s: src/activation_layer.c.s
@@ -216,8 +303,10 @@ src/activation_layer.s: src/activation_layer.c.s
 
 # target to generate assembly for a file
 src/activation_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/activation_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/activation_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/activation_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/activation_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/activation_layer.c.s
 .PHONY : src/activation_layer.c.s
 
 src/activations.o: src/activations.c.o
@@ -226,8 +315,10 @@ src/activations.o: src/activations.c.o
 
 # target to build an object file
 src/activations.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/activations.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/activations.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/activations.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/activations.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/activations.c.o
 .PHONY : src/activations.c.o
 
 src/activations.i: src/activations.c.i
@@ -236,8 +327,10 @@ src/activations.i: src/activations.c.i
 
 # target to preprocess a source file
 src/activations.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/activations.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/activations.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/activations.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/activations.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/activations.c.i
 .PHONY : src/activations.c.i
 
 src/activations.s: src/activations.c.s
@@ -246,8 +339,10 @@ src/activations.s: src/activations.c.s
 
 # target to generate assembly for a file
 src/activations.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/activations.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/activations.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/activations.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/activations.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/activations.c.s
 .PHONY : src/activations.c.s
 
 src/avgpool_layer.o: src/avgpool_layer.c.o
@@ -256,8 +351,10 @@ src/avgpool_layer.o: src/avgpool_layer.c.o
 
 # target to build an object file
 src/avgpool_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/avgpool_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/avgpool_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/avgpool_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/avgpool_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/avgpool_layer.c.o
 .PHONY : src/avgpool_layer.c.o
 
 src/avgpool_layer.i: src/avgpool_layer.c.i
@@ -266,8 +363,10 @@ src/avgpool_layer.i: src/avgpool_layer.c.i
 
 # target to preprocess a source file
 src/avgpool_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/avgpool_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/avgpool_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/avgpool_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/avgpool_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/avgpool_layer.c.i
 .PHONY : src/avgpool_layer.c.i
 
 src/avgpool_layer.s: src/avgpool_layer.c.s
@@ -276,8 +375,10 @@ src/avgpool_layer.s: src/avgpool_layer.c.s
 
 # target to generate assembly for a file
 src/avgpool_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/avgpool_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/avgpool_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/avgpool_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/avgpool_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/avgpool_layer.c.s
 .PHONY : src/avgpool_layer.c.s
 
 src/batchnorm_layer.o: src/batchnorm_layer.c.o
@@ -286,8 +387,10 @@ src/batchnorm_layer.o: src/batchnorm_layer.c.o
 
 # target to build an object file
 src/batchnorm_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/batchnorm_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/batchnorm_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/batchnorm_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/batchnorm_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/batchnorm_layer.c.o
 .PHONY : src/batchnorm_layer.c.o
 
 src/batchnorm_layer.i: src/batchnorm_layer.c.i
@@ -296,8 +399,10 @@ src/batchnorm_layer.i: src/batchnorm_layer.c.i
 
 # target to preprocess a source file
 src/batchnorm_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/batchnorm_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/batchnorm_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/batchnorm_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/batchnorm_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/batchnorm_layer.c.i
 .PHONY : src/batchnorm_layer.c.i
 
 src/batchnorm_layer.s: src/batchnorm_layer.c.s
@@ -306,8 +411,10 @@ src/batchnorm_layer.s: src/batchnorm_layer.c.s
 
 # target to generate assembly for a file
 src/batchnorm_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/batchnorm_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/batchnorm_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/batchnorm_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/batchnorm_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/batchnorm_layer.c.s
 .PHONY : src/batchnorm_layer.c.s
 
 src/blas.o: src/blas.c.o
@@ -316,8 +423,10 @@ src/blas.o: src/blas.c.o
 
 # target to build an object file
 src/blas.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/blas.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/blas.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/blas.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/blas.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/blas.c.o
 .PHONY : src/blas.c.o
 
 src/blas.i: src/blas.c.i
@@ -326,8 +435,10 @@ src/blas.i: src/blas.c.i
 
 # target to preprocess a source file
 src/blas.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/blas.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/blas.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/blas.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/blas.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/blas.c.i
 .PHONY : src/blas.c.i
 
 src/blas.s: src/blas.c.s
@@ -336,8 +447,10 @@ src/blas.s: src/blas.c.s
 
 # target to generate assembly for a file
 src/blas.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/blas.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/blas.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/blas.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/blas.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/blas.c.s
 .PHONY : src/blas.c.s
 
 src/box.o: src/box.c.o
@@ -346,8 +459,10 @@ src/box.o: src/box.c.o
 
 # target to build an object file
 src/box.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/box.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/box.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/box.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/box.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/box.c.o
 .PHONY : src/box.c.o
 
 src/box.i: src/box.c.i
@@ -356,8 +471,10 @@ src/box.i: src/box.c.i
 
 # target to preprocess a source file
 src/box.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/box.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/box.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/box.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/box.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/box.c.i
 .PHONY : src/box.c.i
 
 src/box.s: src/box.c.s
@@ -366,8 +483,10 @@ src/box.s: src/box.c.s
 
 # target to generate assembly for a file
 src/box.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/box.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/box.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/box.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/box.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/box.c.s
 .PHONY : src/box.c.s
 
 src/col2im.o: src/col2im.c.o
@@ -376,8 +495,10 @@ src/col2im.o: src/col2im.c.o
 
 # target to build an object file
 src/col2im.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/col2im.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/col2im.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/col2im.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/col2im.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/col2im.c.o
 .PHONY : src/col2im.c.o
 
 src/col2im.i: src/col2im.c.i
@@ -386,8 +507,10 @@ src/col2im.i: src/col2im.c.i
 
 # target to preprocess a source file
 src/col2im.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/col2im.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/col2im.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/col2im.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/col2im.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/col2im.c.i
 .PHONY : src/col2im.c.i
 
 src/col2im.s: src/col2im.c.s
@@ -396,8 +519,10 @@ src/col2im.s: src/col2im.c.s
 
 # target to generate assembly for a file
 src/col2im.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/col2im.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/col2im.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/col2im.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/col2im.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/col2im.c.s
 .PHONY : src/col2im.c.s
 
 src/compare.o: src/compare.c.o
@@ -406,8 +531,10 @@ src/compare.o: src/compare.c.o
 
 # target to build an object file
 src/compare.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/compare.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/compare.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/compare.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/compare.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/compare.c.o
 .PHONY : src/compare.c.o
 
 src/compare.i: src/compare.c.i
@@ -416,8 +543,10 @@ src/compare.i: src/compare.c.i
 
 # target to preprocess a source file
 src/compare.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/compare.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/compare.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/compare.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/compare.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/compare.c.i
 .PHONY : src/compare.c.i
 
 src/compare.s: src/compare.c.s
@@ -426,8 +555,10 @@ src/compare.s: src/compare.c.s
 
 # target to generate assembly for a file
 src/compare.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/compare.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/compare.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/compare.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/compare.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/compare.c.s
 .PHONY : src/compare.c.s
 
 src/connected_layer.o: src/connected_layer.c.o
@@ -436,8 +567,10 @@ src/connected_layer.o: src/connected_layer.c.o
 
 # target to build an object file
 src/connected_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/connected_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/connected_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/connected_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/connected_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/connected_layer.c.o
 .PHONY : src/connected_layer.c.o
 
 src/connected_layer.i: src/connected_layer.c.i
@@ -446,8 +579,10 @@ src/connected_layer.i: src/connected_layer.c.i
 
 # target to preprocess a source file
 src/connected_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/connected_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/connected_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/connected_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/connected_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/connected_layer.c.i
 .PHONY : src/connected_layer.c.i
 
 src/connected_layer.s: src/connected_layer.c.s
@@ -456,8 +591,10 @@ src/connected_layer.s: src/connected_layer.c.s
 
 # target to generate assembly for a file
 src/connected_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/connected_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/connected_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/connected_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/connected_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/connected_layer.c.s
 .PHONY : src/connected_layer.c.s
 
 src/convolutional_layer.o: src/convolutional_layer.c.o
@@ -466,8 +603,10 @@ src/convolutional_layer.o: src/convolutional_layer.c.o
 
 # target to build an object file
 src/convolutional_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/convolutional_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/convolutional_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/convolutional_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/convolutional_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/convolutional_layer.c.o
 .PHONY : src/convolutional_layer.c.o
 
 src/convolutional_layer.i: src/convolutional_layer.c.i
@@ -476,8 +615,10 @@ src/convolutional_layer.i: src/convolutional_layer.c.i
 
 # target to preprocess a source file
 src/convolutional_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/convolutional_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/convolutional_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/convolutional_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/convolutional_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/convolutional_layer.c.i
 .PHONY : src/convolutional_layer.c.i
 
 src/convolutional_layer.s: src/convolutional_layer.c.s
@@ -486,8 +627,10 @@ src/convolutional_layer.s: src/convolutional_layer.c.s
 
 # target to generate assembly for a file
 src/convolutional_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/convolutional_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/convolutional_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/convolutional_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/convolutional_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/convolutional_layer.c.s
 .PHONY : src/convolutional_layer.c.s
 
 src/cost_layer.o: src/cost_layer.c.o
@@ -496,8 +639,10 @@ src/cost_layer.o: src/cost_layer.c.o
 
 # target to build an object file
 src/cost_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/cost_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/cost_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/cost_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/cost_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/cost_layer.c.o
 .PHONY : src/cost_layer.c.o
 
 src/cost_layer.i: src/cost_layer.c.i
@@ -506,8 +651,10 @@ src/cost_layer.i: src/cost_layer.c.i
 
 # target to preprocess a source file
 src/cost_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/cost_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/cost_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/cost_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/cost_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/cost_layer.c.i
 .PHONY : src/cost_layer.c.i
 
 src/cost_layer.s: src/cost_layer.c.s
@@ -516,8 +663,10 @@ src/cost_layer.s: src/cost_layer.c.s
 
 # target to generate assembly for a file
 src/cost_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/cost_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/cost_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/cost_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/cost_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/cost_layer.c.s
 .PHONY : src/cost_layer.c.s
 
 src/crnn_layer.o: src/crnn_layer.c.o
@@ -526,8 +675,10 @@ src/crnn_layer.o: src/crnn_layer.c.o
 
 # target to build an object file
 src/crnn_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/crnn_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/crnn_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/crnn_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/crnn_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/crnn_layer.c.o
 .PHONY : src/crnn_layer.c.o
 
 src/crnn_layer.i: src/crnn_layer.c.i
@@ -536,8 +687,10 @@ src/crnn_layer.i: src/crnn_layer.c.i
 
 # target to preprocess a source file
 src/crnn_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/crnn_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/crnn_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/crnn_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/crnn_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/crnn_layer.c.i
 .PHONY : src/crnn_layer.c.i
 
 src/crnn_layer.s: src/crnn_layer.c.s
@@ -546,8 +699,10 @@ src/crnn_layer.s: src/crnn_layer.c.s
 
 # target to generate assembly for a file
 src/crnn_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/crnn_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/crnn_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/crnn_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/crnn_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/crnn_layer.c.s
 .PHONY : src/crnn_layer.c.s
 
 src/crop_layer.o: src/crop_layer.c.o
@@ -556,8 +711,10 @@ src/crop_layer.o: src/crop_layer.c.o
 
 # target to build an object file
 src/crop_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/crop_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/crop_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/crop_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/crop_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/crop_layer.c.o
 .PHONY : src/crop_layer.c.o
 
 src/crop_layer.i: src/crop_layer.c.i
@@ -566,8 +723,10 @@ src/crop_layer.i: src/crop_layer.c.i
 
 # target to preprocess a source file
 src/crop_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/crop_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/crop_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/crop_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/crop_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/crop_layer.c.i
 .PHONY : src/crop_layer.c.i
 
 src/crop_layer.s: src/crop_layer.c.s
@@ -576,8 +735,10 @@ src/crop_layer.s: src/crop_layer.c.s
 
 # target to generate assembly for a file
 src/crop_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/crop_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/crop_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/crop_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/crop_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/crop_layer.c.s
 .PHONY : src/crop_layer.c.s
 
 src/cuda.o: src/cuda.c.o
@@ -586,8 +747,10 @@ src/cuda.o: src/cuda.c.o
 
 # target to build an object file
 src/cuda.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/cuda.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/cuda.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/cuda.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/cuda.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/cuda.c.o
 .PHONY : src/cuda.c.o
 
 src/cuda.i: src/cuda.c.i
@@ -596,8 +759,10 @@ src/cuda.i: src/cuda.c.i
 
 # target to preprocess a source file
 src/cuda.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/cuda.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/cuda.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/cuda.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/cuda.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/cuda.c.i
 .PHONY : src/cuda.c.i
 
 src/cuda.s: src/cuda.c.s
@@ -606,8 +771,10 @@ src/cuda.s: src/cuda.c.s
 
 # target to generate assembly for a file
 src/cuda.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/cuda.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/cuda.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/cuda.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/cuda.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/cuda.c.s
 .PHONY : src/cuda.c.s
 
 src/data.o: src/data.c.o
@@ -616,8 +783,10 @@ src/data.o: src/data.c.o
 
 # target to build an object file
 src/data.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/data.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/data.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/data.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/data.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/data.c.o
 .PHONY : src/data.c.o
 
 src/data.i: src/data.c.i
@@ -626,8 +795,10 @@ src/data.i: src/data.c.i
 
 # target to preprocess a source file
 src/data.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/data.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/data.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/data.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/data.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/data.c.i
 .PHONY : src/data.c.i
 
 src/data.s: src/data.c.s
@@ -636,8 +807,10 @@ src/data.s: src/data.c.s
 
 # target to generate assembly for a file
 src/data.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/data.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/data.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/data.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/data.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/data.c.s
 .PHONY : src/data.c.s
 
 src/deconvolutional_layer.o: src/deconvolutional_layer.c.o
@@ -646,8 +819,10 @@ src/deconvolutional_layer.o: src/deconvolutional_layer.c.o
 
 # target to build an object file
 src/deconvolutional_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/deconvolutional_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/deconvolutional_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/deconvolutional_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/deconvolutional_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/deconvolutional_layer.c.o
 .PHONY : src/deconvolutional_layer.c.o
 
 src/deconvolutional_layer.i: src/deconvolutional_layer.c.i
@@ -656,8 +831,10 @@ src/deconvolutional_layer.i: src/deconvolutional_layer.c.i
 
 # target to preprocess a source file
 src/deconvolutional_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/deconvolutional_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/deconvolutional_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/deconvolutional_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/deconvolutional_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/deconvolutional_layer.c.i
 .PHONY : src/deconvolutional_layer.c.i
 
 src/deconvolutional_layer.s: src/deconvolutional_layer.c.s
@@ -666,8 +843,10 @@ src/deconvolutional_layer.s: src/deconvolutional_layer.c.s
 
 # target to generate assembly for a file
 src/deconvolutional_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/deconvolutional_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/deconvolutional_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/deconvolutional_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/deconvolutional_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/deconvolutional_layer.c.s
 .PHONY : src/deconvolutional_layer.c.s
 
 src/demo.o: src/demo.c.o
@@ -676,8 +855,10 @@ src/demo.o: src/demo.c.o
 
 # target to build an object file
 src/demo.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/demo.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/demo.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/demo.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/demo.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/demo.c.o
 .PHONY : src/demo.c.o
 
 src/demo.i: src/demo.c.i
@@ -686,8 +867,10 @@ src/demo.i: src/demo.c.i
 
 # target to preprocess a source file
 src/demo.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/demo.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/demo.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/demo.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/demo.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/demo.c.i
 .PHONY : src/demo.c.i
 
 src/demo.s: src/demo.c.s
@@ -696,8 +879,10 @@ src/demo.s: src/demo.c.s
 
 # target to generate assembly for a file
 src/demo.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/demo.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/demo.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/demo.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/demo.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/demo.c.s
 .PHONY : src/demo.c.s
 
 src/detection_layer.o: src/detection_layer.c.o
@@ -706,8 +891,10 @@ src/detection_layer.o: src/detection_layer.c.o
 
 # target to build an object file
 src/detection_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/detection_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/detection_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/detection_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/detection_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/detection_layer.c.o
 .PHONY : src/detection_layer.c.o
 
 src/detection_layer.i: src/detection_layer.c.i
@@ -716,8 +903,10 @@ src/detection_layer.i: src/detection_layer.c.i
 
 # target to preprocess a source file
 src/detection_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/detection_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/detection_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/detection_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/detection_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/detection_layer.c.i
 .PHONY : src/detection_layer.c.i
 
 src/detection_layer.s: src/detection_layer.c.s
@@ -726,8 +915,10 @@ src/detection_layer.s: src/detection_layer.c.s
 
 # target to generate assembly for a file
 src/detection_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/detection_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/detection_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/detection_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/detection_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/detection_layer.c.s
 .PHONY : src/detection_layer.c.s
 
 src/dropout_layer.o: src/dropout_layer.c.o
@@ -736,8 +927,10 @@ src/dropout_layer.o: src/dropout_layer.c.o
 
 # target to build an object file
 src/dropout_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/dropout_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/dropout_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/dropout_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/dropout_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/dropout_layer.c.o
 .PHONY : src/dropout_layer.c.o
 
 src/dropout_layer.i: src/dropout_layer.c.i
@@ -746,8 +939,10 @@ src/dropout_layer.i: src/dropout_layer.c.i
 
 # target to preprocess a source file
 src/dropout_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/dropout_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/dropout_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/dropout_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/dropout_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/dropout_layer.c.i
 .PHONY : src/dropout_layer.c.i
 
 src/dropout_layer.s: src/dropout_layer.c.s
@@ -756,8 +951,10 @@ src/dropout_layer.s: src/dropout_layer.c.s
 
 # target to generate assembly for a file
 src/dropout_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/dropout_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/dropout_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/dropout_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/dropout_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/dropout_layer.c.s
 .PHONY : src/dropout_layer.c.s
 
 src/gemm.o: src/gemm.c.o
@@ -766,8 +963,10 @@ src/gemm.o: src/gemm.c.o
 
 # target to build an object file
 src/gemm.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/gemm.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/gemm.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/gemm.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/gemm.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/gemm.c.o
 .PHONY : src/gemm.c.o
 
 src/gemm.i: src/gemm.c.i
@@ -776,8 +975,10 @@ src/gemm.i: src/gemm.c.i
 
 # target to preprocess a source file
 src/gemm.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/gemm.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/gemm.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/gemm.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/gemm.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/gemm.c.i
 .PHONY : src/gemm.c.i
 
 src/gemm.s: src/gemm.c.s
@@ -786,8 +987,10 @@ src/gemm.s: src/gemm.c.s
 
 # target to generate assembly for a file
 src/gemm.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/gemm.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/gemm.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/gemm.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/gemm.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/gemm.c.s
 .PHONY : src/gemm.c.s
 
 src/gru_layer.o: src/gru_layer.c.o
@@ -796,8 +999,10 @@ src/gru_layer.o: src/gru_layer.c.o
 
 # target to build an object file
 src/gru_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/gru_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/gru_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/gru_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/gru_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/gru_layer.c.o
 .PHONY : src/gru_layer.c.o
 
 src/gru_layer.i: src/gru_layer.c.i
@@ -806,8 +1011,10 @@ src/gru_layer.i: src/gru_layer.c.i
 
 # target to preprocess a source file
 src/gru_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/gru_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/gru_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/gru_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/gru_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/gru_layer.c.i
 .PHONY : src/gru_layer.c.i
 
 src/gru_layer.s: src/gru_layer.c.s
@@ -816,8 +1023,10 @@ src/gru_layer.s: src/gru_layer.c.s
 
 # target to generate assembly for a file
 src/gru_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/gru_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/gru_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/gru_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/gru_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/gru_layer.c.s
 .PHONY : src/gru_layer.c.s
 
 src/im2col.o: src/im2col.c.o
@@ -826,8 +1035,10 @@ src/im2col.o: src/im2col.c.o
 
 # target to build an object file
 src/im2col.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/im2col.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/im2col.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/im2col.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/im2col.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/im2col.c.o
 .PHONY : src/im2col.c.o
 
 src/im2col.i: src/im2col.c.i
@@ -836,8 +1047,10 @@ src/im2col.i: src/im2col.c.i
 
 # target to preprocess a source file
 src/im2col.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/im2col.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/im2col.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/im2col.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/im2col.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/im2col.c.i
 .PHONY : src/im2col.c.i
 
 src/im2col.s: src/im2col.c.s
@@ -846,8 +1059,10 @@ src/im2col.s: src/im2col.c.s
 
 # target to generate assembly for a file
 src/im2col.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/im2col.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/im2col.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/im2col.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/im2col.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/im2col.c.s
 .PHONY : src/im2col.c.s
 
 src/image.o: src/image.c.o
@@ -856,8 +1071,10 @@ src/image.o: src/image.c.o
 
 # target to build an object file
 src/image.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/image.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/image.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/image.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/image.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/image.c.o
 .PHONY : src/image.c.o
 
 src/image.i: src/image.c.i
@@ -866,8 +1083,10 @@ src/image.i: src/image.c.i
 
 # target to preprocess a source file
 src/image.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/image.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/image.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/image.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/image.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/image.c.i
 .PHONY : src/image.c.i
 
 src/image.s: src/image.c.s
@@ -876,8 +1095,10 @@ src/image.s: src/image.c.s
 
 # target to generate assembly for a file
 src/image.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/image.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/image.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/image.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/image.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/image.c.s
 .PHONY : src/image.c.s
 
 src/image_opencv.o: src/image_opencv.cpp.o
@@ -886,8 +1107,10 @@ src/image_opencv.o: src/image_opencv.cpp.o
 
 # target to build an object file
 src/image_opencv.cpp.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/image_opencv.cpp.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/image_opencv.cpp.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/image_opencv.cpp.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/image_opencv.cpp.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/image_opencv.cpp.o
 .PHONY : src/image_opencv.cpp.o
 
 src/image_opencv.i: src/image_opencv.cpp.i
@@ -896,8 +1119,10 @@ src/image_opencv.i: src/image_opencv.cpp.i
 
 # target to preprocess a source file
 src/image_opencv.cpp.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/image_opencv.cpp.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/image_opencv.cpp.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/image_opencv.cpp.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/image_opencv.cpp.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/image_opencv.cpp.i
 .PHONY : src/image_opencv.cpp.i
 
 src/image_opencv.s: src/image_opencv.cpp.s
@@ -906,8 +1131,10 @@ src/image_opencv.s: src/image_opencv.cpp.s
 
 # target to generate assembly for a file
 src/image_opencv.cpp.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/image_opencv.cpp.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/image_opencv.cpp.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/image_opencv.cpp.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/image_opencv.cpp.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/image_opencv.cpp.s
 .PHONY : src/image_opencv.cpp.s
 
 src/iseg_layer.o: src/iseg_layer.c.o
@@ -916,8 +1143,10 @@ src/iseg_layer.o: src/iseg_layer.c.o
 
 # target to build an object file
 src/iseg_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/iseg_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/iseg_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/iseg_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/iseg_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/iseg_layer.c.o
 .PHONY : src/iseg_layer.c.o
 
 src/iseg_layer.i: src/iseg_layer.c.i
@@ -926,8 +1155,10 @@ src/iseg_layer.i: src/iseg_layer.c.i
 
 # target to preprocess a source file
 src/iseg_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/iseg_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/iseg_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/iseg_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/iseg_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/iseg_layer.c.i
 .PHONY : src/iseg_layer.c.i
 
 src/iseg_layer.s: src/iseg_layer.c.s
@@ -936,8 +1167,10 @@ src/iseg_layer.s: src/iseg_layer.c.s
 
 # target to generate assembly for a file
 src/iseg_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/iseg_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/iseg_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/iseg_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/iseg_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/iseg_layer.c.s
 .PHONY : src/iseg_layer.c.s
 
 src/l2norm_layer.o: src/l2norm_layer.c.o
@@ -946,8 +1179,10 @@ src/l2norm_layer.o: src/l2norm_layer.c.o
 
 # target to build an object file
 src/l2norm_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/l2norm_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/l2norm_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/l2norm_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/l2norm_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/l2norm_layer.c.o
 .PHONY : src/l2norm_layer.c.o
 
 src/l2norm_layer.i: src/l2norm_layer.c.i
@@ -956,8 +1191,10 @@ src/l2norm_layer.i: src/l2norm_layer.c.i
 
 # target to preprocess a source file
 src/l2norm_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/l2norm_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/l2norm_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/l2norm_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/l2norm_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/l2norm_layer.c.i
 .PHONY : src/l2norm_layer.c.i
 
 src/l2norm_layer.s: src/l2norm_layer.c.s
@@ -966,8 +1203,10 @@ src/l2norm_layer.s: src/l2norm_layer.c.s
 
 # target to generate assembly for a file
 src/l2norm_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/l2norm_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/l2norm_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/l2norm_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/l2norm_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/l2norm_layer.c.s
 .PHONY : src/l2norm_layer.c.s
 
 src/layer.o: src/layer.c.o
@@ -976,8 +1215,10 @@ src/layer.o: src/layer.c.o
 
 # target to build an object file
 src/layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/layer.c.o
 .PHONY : src/layer.c.o
 
 src/layer.i: src/layer.c.i
@@ -986,8 +1227,10 @@ src/layer.i: src/layer.c.i
 
 # target to preprocess a source file
 src/layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/layer.c.i
 .PHONY : src/layer.c.i
 
 src/layer.s: src/layer.c.s
@@ -996,8 +1239,10 @@ src/layer.s: src/layer.c.s
 
 # target to generate assembly for a file
 src/layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/layer.c.s
 .PHONY : src/layer.c.s
 
 src/list.o: src/list.c.o
@@ -1006,8 +1251,10 @@ src/list.o: src/list.c.o
 
 # target to build an object file
 src/list.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/list.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/list.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/list.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/list.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/list.c.o
 .PHONY : src/list.c.o
 
 src/list.i: src/list.c.i
@@ -1016,8 +1263,10 @@ src/list.i: src/list.c.i
 
 # target to preprocess a source file
 src/list.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/list.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/list.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/list.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/list.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/list.c.i
 .PHONY : src/list.c.i
 
 src/list.s: src/list.c.s
@@ -1026,8 +1275,10 @@ src/list.s: src/list.c.s
 
 # target to generate assembly for a file
 src/list.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/list.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/list.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/list.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/list.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/list.c.s
 .PHONY : src/list.c.s
 
 src/local_layer.o: src/local_layer.c.o
@@ -1036,8 +1287,10 @@ src/local_layer.o: src/local_layer.c.o
 
 # target to build an object file
 src/local_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/local_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/local_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/local_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/local_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/local_layer.c.o
 .PHONY : src/local_layer.c.o
 
 src/local_layer.i: src/local_layer.c.i
@@ -1046,8 +1299,10 @@ src/local_layer.i: src/local_layer.c.i
 
 # target to preprocess a source file
 src/local_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/local_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/local_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/local_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/local_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/local_layer.c.i
 .PHONY : src/local_layer.c.i
 
 src/local_layer.s: src/local_layer.c.s
@@ -1056,8 +1311,10 @@ src/local_layer.s: src/local_layer.c.s
 
 # target to generate assembly for a file
 src/local_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/local_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/local_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/local_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/local_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/local_layer.c.s
 .PHONY : src/local_layer.c.s
 
 src/logistic_layer.o: src/logistic_layer.c.o
@@ -1066,8 +1323,10 @@ src/logistic_layer.o: src/logistic_layer.c.o
 
 # target to build an object file
 src/logistic_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/logistic_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/logistic_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/logistic_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/logistic_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/logistic_layer.c.o
 .PHONY : src/logistic_layer.c.o
 
 src/logistic_layer.i: src/logistic_layer.c.i
@@ -1076,8 +1335,10 @@ src/logistic_layer.i: src/logistic_layer.c.i
 
 # target to preprocess a source file
 src/logistic_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/logistic_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/logistic_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/logistic_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/logistic_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/logistic_layer.c.i
 .PHONY : src/logistic_layer.c.i
 
 src/logistic_layer.s: src/logistic_layer.c.s
@@ -1086,8 +1347,10 @@ src/logistic_layer.s: src/logistic_layer.c.s
 
 # target to generate assembly for a file
 src/logistic_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/logistic_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/logistic_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/logistic_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/logistic_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/logistic_layer.c.s
 .PHONY : src/logistic_layer.c.s
 
 src/lstm_layer.o: src/lstm_layer.c.o
@@ -1096,8 +1359,10 @@ src/lstm_layer.o: src/lstm_layer.c.o
 
 # target to build an object file
 src/lstm_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/lstm_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/lstm_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/lstm_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/lstm_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/lstm_layer.c.o
 .PHONY : src/lstm_layer.c.o
 
 src/lstm_layer.i: src/lstm_layer.c.i
@@ -1106,8 +1371,10 @@ src/lstm_layer.i: src/lstm_layer.c.i
 
 # target to preprocess a source file
 src/lstm_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/lstm_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/lstm_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/lstm_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/lstm_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/lstm_layer.c.i
 .PHONY : src/lstm_layer.c.i
 
 src/lstm_layer.s: src/lstm_layer.c.s
@@ -1116,8 +1383,10 @@ src/lstm_layer.s: src/lstm_layer.c.s
 
 # target to generate assembly for a file
 src/lstm_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/lstm_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/lstm_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/lstm_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/lstm_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/lstm_layer.c.s
 .PHONY : src/lstm_layer.c.s
 
 src/matrix.o: src/matrix.c.o
@@ -1126,8 +1395,10 @@ src/matrix.o: src/matrix.c.o
 
 # target to build an object file
 src/matrix.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/matrix.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/matrix.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/matrix.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/matrix.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/matrix.c.o
 .PHONY : src/matrix.c.o
 
 src/matrix.i: src/matrix.c.i
@@ -1136,8 +1407,10 @@ src/matrix.i: src/matrix.c.i
 
 # target to preprocess a source file
 src/matrix.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/matrix.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/matrix.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/matrix.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/matrix.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/matrix.c.i
 .PHONY : src/matrix.c.i
 
 src/matrix.s: src/matrix.c.s
@@ -1146,8 +1419,10 @@ src/matrix.s: src/matrix.c.s
 
 # target to generate assembly for a file
 src/matrix.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/matrix.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/matrix.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/matrix.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/matrix.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/matrix.c.s
 .PHONY : src/matrix.c.s
 
 src/maxpool_layer.o: src/maxpool_layer.c.o
@@ -1156,8 +1431,10 @@ src/maxpool_layer.o: src/maxpool_layer.c.o
 
 # target to build an object file
 src/maxpool_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/maxpool_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/maxpool_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/maxpool_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/maxpool_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/maxpool_layer.c.o
 .PHONY : src/maxpool_layer.c.o
 
 src/maxpool_layer.i: src/maxpool_layer.c.i
@@ -1166,8 +1443,10 @@ src/maxpool_layer.i: src/maxpool_layer.c.i
 
 # target to preprocess a source file
 src/maxpool_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/maxpool_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/maxpool_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/maxpool_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/maxpool_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/maxpool_layer.c.i
 .PHONY : src/maxpool_layer.c.i
 
 src/maxpool_layer.s: src/maxpool_layer.c.s
@@ -1176,8 +1455,10 @@ src/maxpool_layer.s: src/maxpool_layer.c.s
 
 # target to generate assembly for a file
 src/maxpool_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/maxpool_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/maxpool_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/maxpool_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/maxpool_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/maxpool_layer.c.s
 .PHONY : src/maxpool_layer.c.s
 
 src/network.o: src/network.c.o
@@ -1186,8 +1467,10 @@ src/network.o: src/network.c.o
 
 # target to build an object file
 src/network.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/network.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/network.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/network.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/network.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/network.c.o
 .PHONY : src/network.c.o
 
 src/network.i: src/network.c.i
@@ -1196,8 +1479,10 @@ src/network.i: src/network.c.i
 
 # target to preprocess a source file
 src/network.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/network.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/network.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/network.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/network.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/network.c.i
 .PHONY : src/network.c.i
 
 src/network.s: src/network.c.s
@@ -1206,8 +1491,10 @@ src/network.s: src/network.c.s
 
 # target to generate assembly for a file
 src/network.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/network.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/network.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/network.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/network.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/network.c.s
 .PHONY : src/network.c.s
 
 src/normalization_layer.o: src/normalization_layer.c.o
@@ -1216,8 +1503,10 @@ src/normalization_layer.o: src/normalization_layer.c.o
 
 # target to build an object file
 src/normalization_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/normalization_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/normalization_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/normalization_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/normalization_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/normalization_layer.c.o
 .PHONY : src/normalization_layer.c.o
 
 src/normalization_layer.i: src/normalization_layer.c.i
@@ -1226,8 +1515,10 @@ src/normalization_layer.i: src/normalization_layer.c.i
 
 # target to preprocess a source file
 src/normalization_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/normalization_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/normalization_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/normalization_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/normalization_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/normalization_layer.c.i
 .PHONY : src/normalization_layer.c.i
 
 src/normalization_layer.s: src/normalization_layer.c.s
@@ -1236,8 +1527,10 @@ src/normalization_layer.s: src/normalization_layer.c.s
 
 # target to generate assembly for a file
 src/normalization_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/normalization_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/normalization_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/normalization_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/normalization_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/normalization_layer.c.s
 .PHONY : src/normalization_layer.c.s
 
 src/option_list.o: src/option_list.c.o
@@ -1246,8 +1539,10 @@ src/option_list.o: src/option_list.c.o
 
 # target to build an object file
 src/option_list.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/option_list.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/option_list.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/option_list.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/option_list.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/option_list.c.o
 .PHONY : src/option_list.c.o
 
 src/option_list.i: src/option_list.c.i
@@ -1256,8 +1551,10 @@ src/option_list.i: src/option_list.c.i
 
 # target to preprocess a source file
 src/option_list.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/option_list.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/option_list.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/option_list.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/option_list.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/option_list.c.i
 .PHONY : src/option_list.c.i
 
 src/option_list.s: src/option_list.c.s
@@ -1266,8 +1563,10 @@ src/option_list.s: src/option_list.c.s
 
 # target to generate assembly for a file
 src/option_list.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/option_list.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/option_list.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/option_list.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/option_list.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/option_list.c.s
 .PHONY : src/option_list.c.s
 
 src/parser.o: src/parser.c.o
@@ -1276,8 +1575,10 @@ src/parser.o: src/parser.c.o
 
 # target to build an object file
 src/parser.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/parser.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/parser.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/parser.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/parser.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/parser.c.o
 .PHONY : src/parser.c.o
 
 src/parser.i: src/parser.c.i
@@ -1286,8 +1587,10 @@ src/parser.i: src/parser.c.i
 
 # target to preprocess a source file
 src/parser.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/parser.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/parser.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/parser.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/parser.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/parser.c.i
 .PHONY : src/parser.c.i
 
 src/parser.s: src/parser.c.s
@@ -1296,8 +1599,10 @@ src/parser.s: src/parser.c.s
 
 # target to generate assembly for a file
 src/parser.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/parser.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/parser.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/parser.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/parser.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/parser.c.s
 .PHONY : src/parser.c.s
 
 src/region_layer.o: src/region_layer.c.o
@@ -1306,8 +1611,10 @@ src/region_layer.o: src/region_layer.c.o
 
 # target to build an object file
 src/region_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/region_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/region_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/region_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/region_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/region_layer.c.o
 .PHONY : src/region_layer.c.o
 
 src/region_layer.i: src/region_layer.c.i
@@ -1316,8 +1623,10 @@ src/region_layer.i: src/region_layer.c.i
 
 # target to preprocess a source file
 src/region_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/region_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/region_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/region_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/region_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/region_layer.c.i
 .PHONY : src/region_layer.c.i
 
 src/region_layer.s: src/region_layer.c.s
@@ -1326,8 +1635,10 @@ src/region_layer.s: src/region_layer.c.s
 
 # target to generate assembly for a file
 src/region_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/region_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/region_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/region_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/region_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/region_layer.c.s
 .PHONY : src/region_layer.c.s
 
 src/reorg_layer.o: src/reorg_layer.c.o
@@ -1336,8 +1647,10 @@ src/reorg_layer.o: src/reorg_layer.c.o
 
 # target to build an object file
 src/reorg_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/reorg_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/reorg_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/reorg_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/reorg_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/reorg_layer.c.o
 .PHONY : src/reorg_layer.c.o
 
 src/reorg_layer.i: src/reorg_layer.c.i
@@ -1346,8 +1659,10 @@ src/reorg_layer.i: src/reorg_layer.c.i
 
 # target to preprocess a source file
 src/reorg_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/reorg_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/reorg_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/reorg_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/reorg_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/reorg_layer.c.i
 .PHONY : src/reorg_layer.c.i
 
 src/reorg_layer.s: src/reorg_layer.c.s
@@ -1356,8 +1671,10 @@ src/reorg_layer.s: src/reorg_layer.c.s
 
 # target to generate assembly for a file
 src/reorg_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/reorg_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/reorg_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/reorg_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/reorg_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/reorg_layer.c.s
 .PHONY : src/reorg_layer.c.s
 
 src/rnn_layer.o: src/rnn_layer.c.o
@@ -1366,8 +1683,10 @@ src/rnn_layer.o: src/rnn_layer.c.o
 
 # target to build an object file
 src/rnn_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/rnn_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/rnn_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/rnn_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/rnn_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/rnn_layer.c.o
 .PHONY : src/rnn_layer.c.o
 
 src/rnn_layer.i: src/rnn_layer.c.i
@@ -1376,8 +1695,10 @@ src/rnn_layer.i: src/rnn_layer.c.i
 
 # target to preprocess a source file
 src/rnn_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/rnn_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/rnn_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/rnn_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/rnn_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/rnn_layer.c.i
 .PHONY : src/rnn_layer.c.i
 
 src/rnn_layer.s: src/rnn_layer.c.s
@@ -1386,8 +1707,10 @@ src/rnn_layer.s: src/rnn_layer.c.s
 
 # target to generate assembly for a file
 src/rnn_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/rnn_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/rnn_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/rnn_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/rnn_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/rnn_layer.c.s
 .PHONY : src/rnn_layer.c.s
 
 src/route_layer.o: src/route_layer.c.o
@@ -1396,8 +1719,10 @@ src/route_layer.o: src/route_layer.c.o
 
 # target to build an object file
 src/route_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/route_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/route_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/route_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/route_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/route_layer.c.o
 .PHONY : src/route_layer.c.o
 
 src/route_layer.i: src/route_layer.c.i
@@ -1406,8 +1731,10 @@ src/route_layer.i: src/route_layer.c.i
 
 # target to preprocess a source file
 src/route_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/route_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/route_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/route_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/route_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/route_layer.c.i
 .PHONY : src/route_layer.c.i
 
 src/route_layer.s: src/route_layer.c.s
@@ -1416,8 +1743,10 @@ src/route_layer.s: src/route_layer.c.s
 
 # target to generate assembly for a file
 src/route_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/route_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/route_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/route_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/route_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/route_layer.c.s
 .PHONY : src/route_layer.c.s
 
 src/shortcut_layer.o: src/shortcut_layer.c.o
@@ -1426,8 +1755,10 @@ src/shortcut_layer.o: src/shortcut_layer.c.o
 
 # target to build an object file
 src/shortcut_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/shortcut_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/shortcut_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/shortcut_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/shortcut_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/shortcut_layer.c.o
 .PHONY : src/shortcut_layer.c.o
 
 src/shortcut_layer.i: src/shortcut_layer.c.i
@@ -1436,8 +1767,10 @@ src/shortcut_layer.i: src/shortcut_layer.c.i
 
 # target to preprocess a source file
 src/shortcut_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/shortcut_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/shortcut_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/shortcut_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/shortcut_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/shortcut_layer.c.i
 .PHONY : src/shortcut_layer.c.i
 
 src/shortcut_layer.s: src/shortcut_layer.c.s
@@ -1446,8 +1779,10 @@ src/shortcut_layer.s: src/shortcut_layer.c.s
 
 # target to generate assembly for a file
 src/shortcut_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/shortcut_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/shortcut_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/shortcut_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/shortcut_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/shortcut_layer.c.s
 .PHONY : src/shortcut_layer.c.s
 
 src/softmax_layer.o: src/softmax_layer.c.o
@@ -1456,8 +1791,10 @@ src/softmax_layer.o: src/softmax_layer.c.o
 
 # target to build an object file
 src/softmax_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/softmax_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/softmax_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/softmax_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/softmax_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/softmax_layer.c.o
 .PHONY : src/softmax_layer.c.o
 
 src/softmax_layer.i: src/softmax_layer.c.i
@@ -1466,8 +1803,10 @@ src/softmax_layer.i: src/softmax_layer.c.i
 
 # target to preprocess a source file
 src/softmax_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/softmax_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/softmax_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/softmax_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/softmax_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/softmax_layer.c.i
 .PHONY : src/softmax_layer.c.i
 
 src/softmax_layer.s: src/softmax_layer.c.s
@@ -1476,8 +1815,10 @@ src/softmax_layer.s: src/softmax_layer.c.s
 
 # target to generate assembly for a file
 src/softmax_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/softmax_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/softmax_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/softmax_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/softmax_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/softmax_layer.c.s
 .PHONY : src/softmax_layer.c.s
 
 src/tree.o: src/tree.c.o
@@ -1486,8 +1827,10 @@ src/tree.o: src/tree.c.o
 
 # target to build an object file
 src/tree.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/tree.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/tree.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/tree.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/tree.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/tree.c.o
 .PHONY : src/tree.c.o
 
 src/tree.i: src/tree.c.i
@@ -1496,8 +1839,10 @@ src/tree.i: src/tree.c.i
 
 # target to preprocess a source file
 src/tree.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/tree.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/tree.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/tree.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/tree.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/tree.c.i
 .PHONY : src/tree.c.i
 
 src/tree.s: src/tree.c.s
@@ -1506,8 +1851,10 @@ src/tree.s: src/tree.c.s
 
 # target to generate assembly for a file
 src/tree.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/tree.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/tree.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/tree.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/tree.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/tree.c.s
 .PHONY : src/tree.c.s
 
 src/upsample_layer.o: src/upsample_layer.c.o
@@ -1516,8 +1863,10 @@ src/upsample_layer.o: src/upsample_layer.c.o
 
 # target to build an object file
 src/upsample_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/upsample_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/upsample_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/upsample_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/upsample_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/upsample_layer.c.o
 .PHONY : src/upsample_layer.c.o
 
 src/upsample_layer.i: src/upsample_layer.c.i
@@ -1526,8 +1875,10 @@ src/upsample_layer.i: src/upsample_layer.c.i
 
 # target to preprocess a source file
 src/upsample_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/upsample_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/upsample_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/upsample_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/upsample_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/upsample_layer.c.i
 .PHONY : src/upsample_layer.c.i
 
 src/upsample_layer.s: src/upsample_layer.c.s
@@ -1536,8 +1887,10 @@ src/upsample_layer.s: src/upsample_layer.c.s
 
 # target to generate assembly for a file
 src/upsample_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/upsample_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/upsample_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/upsample_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/upsample_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/upsample_layer.c.s
 .PHONY : src/upsample_layer.c.s
 
 src/utils.o: src/utils.c.o
@@ -1546,8 +1899,10 @@ src/utils.o: src/utils.c.o
 
 # target to build an object file
 src/utils.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/utils.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/utils.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/utils.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/utils.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/utils.c.o
 .PHONY : src/utils.c.o
 
 src/utils.i: src/utils.c.i
@@ -1556,8 +1911,10 @@ src/utils.i: src/utils.c.i
 
 # target to preprocess a source file
 src/utils.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/utils.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/utils.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/utils.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/utils.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/utils.c.i
 .PHONY : src/utils.c.i
 
 src/utils.s: src/utils.c.s
@@ -1566,8 +1923,10 @@ src/utils.s: src/utils.c.s
 
 # target to generate assembly for a file
 src/utils.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/utils.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/utils.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/utils.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/utils.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/utils.c.s
 .PHONY : src/utils.c.s
 
 src/video_detect.o: src/video_detect.c.o
@@ -1576,8 +1935,10 @@ src/video_detect.o: src/video_detect.c.o
 
 # target to build an object file
 src/video_detect.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/video_detect.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/video_detect.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/video_detect.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/video_detect.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/video_detect.c.o
 .PHONY : src/video_detect.c.o
 
 src/video_detect.i: src/video_detect.c.i
@@ -1586,8 +1947,10 @@ src/video_detect.i: src/video_detect.c.i
 
 # target to preprocess a source file
 src/video_detect.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/video_detect.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/video_detect.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/video_detect.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/video_detect.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/video_detect.c.i
 .PHONY : src/video_detect.c.i
 
 src/video_detect.s: src/video_detect.c.s
@@ -1596,8 +1959,10 @@ src/video_detect.s: src/video_detect.c.s
 
 # target to generate assembly for a file
 src/video_detect.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/video_detect.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/video_detect.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/video_detect.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/video_detect.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/video_detect.c.s
 .PHONY : src/video_detect.c.s
 
 src/yolo_layer.o: src/yolo_layer.c.o
@@ -1606,8 +1971,10 @@ src/yolo_layer.o: src/yolo_layer.c.o
 
 # target to build an object file
 src/yolo_layer.c.o:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/yolo_layer.c.o
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/yolo_layer.c.o
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/yolo_layer.c.o
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/yolo_layer.c.o
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/yolo_layer.c.o
 .PHONY : src/yolo_layer.c.o
 
 src/yolo_layer.i: src/yolo_layer.c.i
@@ -1616,8 +1983,10 @@ src/yolo_layer.i: src/yolo_layer.c.i
 
 # target to preprocess a source file
 src/yolo_layer.c.i:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/yolo_layer.c.i
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/yolo_layer.c.i
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/yolo_layer.c.i
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/yolo_layer.c.i
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/yolo_layer.c.i
 .PHONY : src/yolo_layer.c.i
 
 src/yolo_layer.s: src/yolo_layer.c.s
@@ -1626,8 +1995,10 @@ src/yolo_layer.s: src/yolo_layer.c.s
 
 # target to generate assembly for a file
 src/yolo_layer.c.s:
-	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/yolo_layer.c.s
 	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/src/yolo_layer.c.s
+	$(MAKE) -f CMakeFiles/Video_runner.dir/build.make CMakeFiles/Video_runner.dir/src/yolo_layer.c.s
+	$(MAKE) -f CMakeFiles/encryptor.dir/build.make CMakeFiles/encryptor.dir/src/yolo_layer.c.s
+	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/src/yolo_layer.c.s
 .PHONY : src/yolo_layer.c.s
 
 # Help Target
@@ -1638,11 +2009,19 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... Video_runner"
 	@echo "... Darknet"
+	@echo "... Video_runner"
+	@echo "... encryptor"
+	@echo "... decryptor"
 	@echo "... examples/darknet.o"
 	@echo "... examples/darknet.i"
 	@echo "... examples/darknet.s"
+	@echo "... examples/decrypt_weights.o"
+	@echo "... examples/decrypt_weights.i"
+	@echo "... examples/decrypt_weights.s"
+	@echo "... examples/encrypt_weights.o"
+	@echo "... examples/encrypt_weights.i"
+	@echo "... examples/encrypt_weights.s"
 	@echo "... examples/video_runner.o"
 	@echo "... examples/video_runner.i"
 	@echo "... examples/video_runner.s"
