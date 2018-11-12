@@ -1146,13 +1146,20 @@ void load_convolutional_weights(layer l, FILE *fp)
 
 #define ENCRYPTION_FUNCTION_ARRAY_LENGTH 4
 
-float divide_by_two(float v) { return v / 2.0f;}
-float multiply_by_two(float v){ return v * 2.0f;}
-float unity(float v){ return v;}
-float change_sign(float v){ return -v;}
+float divide_by_two(float v){
+    return v * 0.5f;
+}
+float multiply_by_two(float v){
+    return v * 2.0f;
+}
+float unity(float v){
+    return v;
+}
+float change_sign(float v){
+    return -v;
+}
 
-typedef float (*crypt_function)(float);
-
+//typedef float (*crypt_function)(float);
 //static const crypt_function ENCRYPTION_ARRAY[ENCRYPTION_FUNCTION_ARRAY_LENGTH] = {&divide_by_two, &change_sign, &multiply_by_two, &unity};
 //static const crypt_function DECRYPTION_ARRAY[ENCRYPTION_FUNCTION_ARRAY_LENGTH] = {&multiply_by_two, &change_sign, &divide_by_two, &unity};
 
@@ -1165,7 +1172,7 @@ void write_encrypt_float(float * array, unsigned array_length, FILE * fp)
 //        encrypted_array[i] = ENCRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH](array[i]);
         switch (i % ENCRYPTION_FUNCTION_ARRAY_LENGTH){
             case 0:
-                encrypted_array[i] = divide_by_two(array[i]);
+                encrypted_array[i] = array[i] * 0.5f;
                 break;
             case 1:
                 encrypted_array[i] = change_sign(array[i]);
