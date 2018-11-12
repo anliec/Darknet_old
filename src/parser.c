@@ -1151,8 +1151,10 @@ float multiply_by_two(float v){ return v * 2.0f;}
 float unity(float v){ return v;}
 float change_sign(float v){ return -v;}
 
-float (*ENCRYPTION_ARRAY[ENCRYPTION_FUNCTION_ARRAY_LENGTH])(float v) = {divide_by_two,change_sign, multiply_by_two, unity};
-float (*DECRYPTION_ARRAY[ENCRYPTION_FUNCTION_ARRAY_LENGTH])(float v) = {multiply_by_two,change_sign, divide_by_two, unity};
+typedef float (*crypt_function)(float);
+
+static const crypt_function ENCRYPTION_ARRAY[ENCRYPTION_FUNCTION_ARRAY_LENGTH] = {&divide_by_two, &change_sign, &multiply_by_two, &unity};
+static const crypt_function DECRYPTION_ARRAY[ENCRYPTION_FUNCTION_ARRAY_LENGTH] = {&multiply_by_two, &change_sign, &divide_by_two, &unity};
 
 
 void write_encrypt_float(float * array, unsigned array_length, FILE * fp)
@@ -1160,7 +1162,7 @@ void write_encrypt_float(float * array, unsigned array_length, FILE * fp)
     float encrypted_array[array_length];
     for(unsigned i=0 ; i<array_length ; ++i)
     {
-        encrypted_array[i] = (*ENCRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH])(array[i]);
+        encrypted_array[i] = ENCRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH](array[i]);
     }
     fwrite(encrypted_array, sizeof(float), array_length, fp);
 }
@@ -1170,7 +1172,7 @@ void read_encrypt_float(float * array, unsigned array_length, FILE * fp)
     fread(array, sizeof(float), array_length, fp);
     for(unsigned i=0 ; i<array_length ; ++i)
     {
-        array[i] = (*DECRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH])(array[i]);
+        array[i] = DECRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH](array[i]);
     }
 }
 
