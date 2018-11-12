@@ -1166,7 +1166,7 @@ float change_sign(float v){
 
 void write_encrypt_float(float * array, unsigned array_length, FILE * fp)
 {
-    float encrypted_array[array_length];
+    float * encrypted_array = malloc(sizeof(float) * array_length);
     for(unsigned i=0 ; i<array_length ; ++i)
     {
 //        encrypted_array[i] = ENCRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH](array[i]);
@@ -1189,6 +1189,7 @@ void write_encrypt_float(float * array, unsigned array_length, FILE * fp)
         }
     }
     fwrite(encrypted_array, sizeof(float), array_length, fp);
+    free(encrypted_array);
 }
 
 void read_encrypt_float(float * array, unsigned array_length, FILE * fp)
