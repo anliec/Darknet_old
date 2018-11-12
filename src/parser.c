@@ -1153,8 +1153,8 @@ float change_sign(float v){ return -v;}
 
 typedef float (*crypt_function)(float);
 
-static const crypt_function ENCRYPTION_ARRAY[ENCRYPTION_FUNCTION_ARRAY_LENGTH] = {&divide_by_two, &change_sign, &multiply_by_two, &unity};
-static const crypt_function DECRYPTION_ARRAY[ENCRYPTION_FUNCTION_ARRAY_LENGTH] = {&multiply_by_two, &change_sign, &divide_by_two, &unity};
+//static const crypt_function ENCRYPTION_ARRAY[ENCRYPTION_FUNCTION_ARRAY_LENGTH] = {&divide_by_two, &change_sign, &multiply_by_two, &unity};
+//static const crypt_function DECRYPTION_ARRAY[ENCRYPTION_FUNCTION_ARRAY_LENGTH] = {&multiply_by_two, &change_sign, &divide_by_two, &unity};
 
 
 void write_encrypt_float(float * array, unsigned array_length, FILE * fp)
@@ -1162,7 +1162,24 @@ void write_encrypt_float(float * array, unsigned array_length, FILE * fp)
     float encrypted_array[array_length];
     for(unsigned i=0 ; i<array_length ; ++i)
     {
-        encrypted_array[i] = ENCRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH](array[i]);
+//        encrypted_array[i] = ENCRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH](array[i]);
+        switch (i % ENCRYPTION_FUNCTION_ARRAY_LENGTH){
+            case 0:
+                encrypted_array[i] = divide_by_two(array[i]);
+                break;
+            case 1:
+                encrypted_array[i] = change_sign(array[i]);
+                break;
+            case 2:
+                encrypted_array[i] = multiply_by_two(array[i]);
+                break;
+            case 3:
+                encrypted_array[i] = unity(array[i]);
+                break;
+            default:
+                printf("The requested index the note exist");
+                exit(1);
+        }
     }
     fwrite(encrypted_array, sizeof(float), array_length, fp);
 }
@@ -1172,7 +1189,24 @@ void read_encrypt_float(float * array, unsigned array_length, FILE * fp)
     fread(array, sizeof(float), array_length, fp);
     for(unsigned i=0 ; i<array_length ; ++i)
     {
-        array[i] = DECRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH](array[i]);
+//        array[i] = DECRYPTION_ARRAY[i % ENCRYPTION_FUNCTION_ARRAY_LENGTH](array[i]);
+        switch (i % ENCRYPTION_FUNCTION_ARRAY_LENGTH){
+            case 0:
+                array[i] = multiply_by_two(array[i]);
+                break;
+            case 1:
+                array[i] = change_sign(array[i]);
+                break;
+            case 2:
+                array[i] = divide_by_two(array[i]);
+                break;
+            case 3:
+                array[i] = unity(array[i]);
+                break;
+            default:
+                printf("The requested index the note exist");
+                exit(1);
+        }
     }
 }
 
