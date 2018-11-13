@@ -128,9 +128,9 @@ matrix load_image_augment_paths(char **paths, int n, int min, int max, int size,
         random_distort_image(crop, hue, saturation, exposure);
 
 
-        show_image(im, "orig", 1);
-        show_image(crop, "crop", 1);
-        cvWaitKey(0);
+//        show_image(im, "orig", 1);
+//        show_image(crop, "crop", 1);
+//        cvWaitKey(0);
 
         //grayscale_image_3c(crop);
         free_image(im);
@@ -1085,6 +1085,10 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, in
 
 
         fill_truth_detection(random_paths[i], boxes, d.y.vals[i], classes, flip, -dx/w, -dy/h, nw/w, nh/h);
+
+        show_image(orig, "orig", 1);
+        show_image(sized, "crop", 1);
+        cvWaitKey(0);
 
         free_image(orig);
     }
