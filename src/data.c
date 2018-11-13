@@ -128,8 +128,8 @@ matrix load_image_augment_paths(char **paths, int n, int min, int max, int size,
         random_distort_image(crop, hue, saturation, exposure);
 
 
-        show_image(im, "orig");
-        show_image(crop, "crop");
+        show_image(im, "orig", 1);
+        show_image(crop, "crop", 1);
         cvWaitKey(0);
 
         //grayscale_image_3c(crop);
