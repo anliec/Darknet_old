@@ -1086,8 +1086,9 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, in
 
         fill_truth_detection(random_paths[i], boxes, d.y.vals[i], classes, flip, -dx/w, -dy/h, nw/w, nh/h);
 
-        show_image(orig, "orig", 1);
-        show_image(sized, "crop", 1);
+        printf("orig: %dx%d\tcrop: %dx%d\n", orig.w, orig.h, sized.w, sized.h);
+        show_image(orig, "orig", 0);
+        show_image(sized, "crop", 0);
         cvWaitKey(0);
 
         free_image(orig);
