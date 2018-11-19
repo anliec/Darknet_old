@@ -20,6 +20,7 @@ image load_image_cv(char *filename, int channels);
 int show_image_cv(image im, const char* name, int ms);
 double get_cap_property(void * p, int property);
 void close_video_stream(void * p);
+image cvGaussianBlur(image src, int kernelWidth, int kernelHeight, double sigmaX, double sigmaY);
 #endif
 
 float get_color(int c, int x, int max);
@@ -36,7 +37,7 @@ void letterbox_image_into(image im, int w, int h, image boxed);
 image resize_max(image im, int max);
 void translate_image(image m, float s);
 void embed_image(image source, image dest, int dx, int dy);
-void place_image(image im, int w, int h, int dx, int dy, image canvas);
+void place_image(image im, float w, float h, float dx, float dy, float angle, image canvas);
 void saturate_image(image im, float sat);
 void exposure_image(image im, float sat);
 void distort_image(image im, float hue, float sat, float val);
