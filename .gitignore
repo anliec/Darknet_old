@@ -8,9 +8,9 @@
 !*.h
 !*.hpp
 
-!Makefile
-!CMakeLists.txt
-!*.md
+!/Makefile
+!/CMakeLists.txt
+!/*.md
 
 !LICENSE.*
 

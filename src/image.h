@@ -20,7 +20,7 @@ image load_image_cv(char *filename, int channels);
 int show_image_cv(image im, const char* name, int ms);
 double get_cap_property(void * p, int property);
 void close_video_stream(void * p);
-image cvGaussianBlur(image src, int kernelWidth, int kernelHeight, double sigmaX, double sigmaY);
+image cvGaussianBlur(image im, int kernelWidth, int kernelHeight, double sigmaX, double sigmaY);
 #endif
 
 float get_color(int c, int x, int max);

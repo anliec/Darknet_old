@@ -216,6 +216,33 @@ examples/decrypt_weights.c.s:
 	$(MAKE) -f CMakeFiles/decryptor.dir/build.make CMakeFiles/decryptor.dir/examples/decrypt_weights.c.s
 .PHONY : examples/decrypt_weights.c.s
 
+examples/detector.o: examples/detector.c.o
+
+.PHONY : examples/detector.o
+
+# target to build an object file
+examples/detector.c.o:
+	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/examples/detector.c.o
+.PHONY : examples/detector.c.o
+
+examples/detector.i: examples/detector.c.i
+
+.PHONY : examples/detector.i
+
+# target to preprocess a source file
+examples/detector.c.i:
+	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/examples/detector.c.i
+.PHONY : examples/detector.c.i
+
+examples/detector.s: examples/detector.c.s
+
+.PHONY : examples/detector.s
+
+# target to generate assembly for a file
+examples/detector.c.s:
+	$(MAKE) -f CMakeFiles/Darknet.dir/build.make CMakeFiles/Darknet.dir/examples/detector.c.s
+.PHONY : examples/detector.c.s
+
 examples/encrypt_weights.o: examples/encrypt_weights.c.o
 
 .PHONY : examples/encrypt_weights.o
@@ -2019,6 +2046,9 @@ help:
 	@echo "... examples/decrypt_weights.o"
 	@echo "... examples/decrypt_weights.i"
 	@echo "... examples/decrypt_weights.s"
+	@echo "... examples/detector.o"
+	@echo "... examples/detector.i"
+	@echo "... examples/detector.s"
 	@echo "... examples/encrypt_weights.o"
 	@echo "... examples/encrypt_weights.i"
 	@echo "... examples/encrypt_weights.s"

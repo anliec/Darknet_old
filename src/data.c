@@ -1088,7 +1088,7 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, in
         image orig = load_image_color(random_paths[i], 0, 0);
         image sized = make_image(w, h, orig.c);
 
-        float angle = 0.f;
+        const float angle = 0.f;
 //        const float angle = rand_uniform(-10.f*3.14f/360.f, 10.f*3.14f/360.f); // assume small angle (<<pi/2)
         const float cosA = cosf(angle), sinA = sinf(angle);
         const float aSinA = fabsf(sinA);
@@ -1140,7 +1140,9 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, in
 #ifdef OPENCV
         const int kernelHeight = (rand() % 4) * 2 + 1;
         const int kernelWidth  = (rand() % 4) * 2 + 1;
-        sized = cvGaussianBlur(sized, kernelWidth, kernelHeight, 0.0, 0.0);
+        image blurSized = cvGaussianBlur(sized, kernelWidth, kernelHeight, 0.0, 0.0);
+        free_image(sized);
+        sized = blurSized;
 #endif
 
         const int flip = rand() % 2;
