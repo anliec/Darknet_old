@@ -653,6 +653,42 @@ void place_image(image im, float w, float h, float dx, float dy, float angle, im
     }
 }
 
+float gaussrandf()
+{
+    static float V1, V2, S;
+    static int phase = 0;
+    float X;
+
+    if(phase == 0) {
+        do {
+            float U1 = (float)rand() / RAND_MAX;
+            float U2 = (float)rand() / RAND_MAX;
+
+            V1 = 2 * U1 - 1;
+            V2 = 2 * U2 - 1;
+            S = V1 * V1 + V2 * V2;
+        } while(S >= 1 || S == 0);
+
+        X = V1 * sqrtf(-2 * logf(S) / S);
+    } else
+        X = V2 * sqrtf(-2 * logf(S) / S);
+
+    phase = 1 - phase;
+    return X;
+}
+
+void image_add_gaussian_white_noise(image im, float noise_scale){
+    for(int c = 0; c < im.c; ++c) {
+        for (int x = 0; x < im.w; ++x) {
+            for (int y = 0; y < im.h; ++y) {
+                float n = gaussrandf() * noise_scale;
+                float p = get_pixel(im, x, y, c);
+                set_pixel(im, x, y, c, p + n);
+            }
+        }
+    }
+}
+
 image center_crop_image(image im, int w, int h)
 {
     int m = (im.w < im.h) ? im.w : im.h;   

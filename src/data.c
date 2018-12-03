@@ -176,7 +176,7 @@ void randomize_boxes(box_label *b, int n) {
     }
 }
 
-void correct_boxes_angle(box_label *boxes, int n, float dx, float dy, float sx, float sy, int flip, float sinA, float cosA) {
+void correct_boxes_angle(box_label *boxes, int n, int dx, int dy, int sx, int sy, int flip, float sinA, float cosA, image orig, image sized) {
     int i;
     for (i = 0; i < n; ++i) {
         if (boxes[i].x == 0 && boxes[i].y == 0) {
@@ -187,10 +187,16 @@ void correct_boxes_angle(box_label *boxes, int n, float dx, float dy, float sx, 
             continue;
         }
 
-        boxes[i].left   = (boxes[i].left   - dx);
-        boxes[i].right  = (boxes[i].right  - dx);
-        boxes[i].top    = (boxes[i].top    - dy);
-        boxes[i].bottom = (boxes[i].bottom - dy);
+        // go into pixel coordinate
+        boxes[i].left   *= orig.w;
+        boxes[i].right  *= orig.w;
+        boxes[i].top    *= orig.h;
+        boxes[i].bottom *= orig.h;
+
+        boxes[i].left   -= dx;
+        boxes[i].right  -= dx;
+        boxes[i].top    -= dy;
+        boxes[i].bottom -= dy;
 
         boxes[i].x = (boxes[i].left   + boxes[i].right) / 2;
         boxes[i].y = (boxes[i].top    + boxes[i].bottom) / 2;
@@ -202,10 +208,11 @@ void correct_boxes_angle(box_label *boxes, int n, float dx, float dy, float sx, 
         boxes[i].y = (-boxes[i].x * sinA + boxes[i].y * cosA);
         boxes[i].x = new_x;
 
-        boxes[i].x *= sx;
-        boxes[i].y *= sy;
-        boxes[i].w *= sx;
-        boxes[i].h *= sy;
+        // back to relative coordinate
+        boxes[i].x /= sx;
+        boxes[i].y /= sy;
+        boxes[i].w /= sx;
+        boxes[i].h /= sy;
 
         boxes[i].left   = boxes[i].x - (boxes[i].w / 2);
         boxes[i].right  = boxes[i].x + (boxes[i].w / 2);
@@ -491,8 +498,8 @@ fill_truth_mask(char *path, int num_boxes, float *truth, int classes, int w, int
 }
 
 
-void fill_truth_detection(char *path, int num_boxes, float *truth, int flip, float dx, float dy, float sx, float sy,
-                          float sinA, float cosA) {
+void fill_truth_detection(char *path, int num_boxes, float *truth, int flip, int dx, int dy, int sx, int sy,
+                          float sinA, float cosA, image orig, image sized) {
     char labelpath[4096];
     find_replace(path, "images", "labels", labelpath);
     find_replace(labelpath, "JPEGImages", "labels", labelpath);
@@ -508,7 +515,7 @@ void fill_truth_detection(char *path, int num_boxes, float *truth, int flip, flo
     int count = 0;
     box_label *boxes = read_boxes(labelpath, &count);
     randomize_boxes(boxes, count);
-    correct_boxes_angle(boxes, count, dx, dy, sx, sy, flip, sinA, cosA);
+    correct_boxes_angle(boxes, count, dx, dy, sx, sy, flip, sinA, cosA, orig, sized);
     if (count > num_boxes) count = num_boxes;
     float x, y, w, h;
     int id;
@@ -1088,8 +1095,8 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, in
         image orig = load_image_color(random_paths[i], 0, 0);
         image sized = make_image(w, h, orig.c);
 
-        const float angle = 0.f;
-//        const float angle = rand_uniform(-10.f*3.14f/360.f, 10.f*3.14f/360.f); // assume small angle (<<pi/2)
+//        const float angle = 0.f;
+        const float angle = rand_uniform(-30.f*3.14f/360.f, 30.f*3.14f/360.f); // assume small angle (<<pi/2)
         const float cosA = cosf(angle), sinA = sinf(angle);
         const float aSinA = fabsf(sinA);
 
@@ -1112,7 +1119,7 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, in
         const float max_possible_scale =
                 max_possible_scale_h < max_possible_scale_w ? max_possible_scale_h : max_possible_scale_w;
 
-        const float scale = rand_uniform(max_possible_scale * 0.5f, max_possible_scale);
+        const float scale = rand_uniform(max_possible_scale * 0.70f, max_possible_scale);
 //        const float scale = max_possible_scale;
         nh *= scale;
         nw *= scale;
@@ -1138,40 +1145,49 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, in
         random_distort_image(sized, hue, saturation, exposure);
 
 #ifdef OPENCV
-        const int kernelHeight = (rand() % 4) * 2 + 1;
-        const int kernelWidth  = (rand() % 4) * 2 + 1;
+        const int kernelHeight = (rand() % 3) * 2 + 1;
+        const int kernelWidth  = (rand() % 3) * 2 + 1;
         image blurSized = cvGaussianBlur(sized, kernelWidth, kernelHeight, 0.0, 0.0);
         free_image(sized);
         sized = blurSized;
 #endif
+        image_add_gaussian_white_noise(sized, 0.02f * ((float)rand() / RAND_MAX));
 
         const int flip = rand() % 2;
         if (flip) flip_image(sized);
         d.X.vals[i] = sized.data;
 
-        // convert angles
-        const float bbAngle = atan2f(sinA * orig.w, cosA * orig.h);
-        const float bbSinA = sinf(bbAngle);
-        const float bbCosA = cosf(bbAngle);
-        fill_truth_detection(random_paths[i], boxes, d.y.vals[i], flip, dx / orig.w, dy / orig.h,
-                             orig.w / nw, orig.h / nh,
-                             bbSinA, bbCosA);
+        for (int k = 0; k < boxes; ++k) {
+            float *b = d.y.vals[i];
+            float wo2 = (b[(k * 5) + 2]) * 0.5f;
+            float ho2 = (b[(k * 5) + 3]) * 0.5f;
+            draw_box_width(orig, (int) (orig.w * (b[(k * 5) + 0] - wo2)), (int) (orig.h * (b[(k * 5) + 1] - ho2)),
+                           (int) (orig.w * (b[(k * 5) + 0] + wo2)), (int) (orig.h * (b[(k * 5) + 1] + ho2)),
+                           3, 0.0f, 255.0f, 0.0f);
+        }
 
-//        for (int k = 0; k < boxes; ++k) {
-//            float *b = d.y.vals[i];
-//            float wo2 = (b[(k * 5) + 2]) * 0.5f;
-//            float ho2 = (b[(k * 5) + 3]) * 0.5f;
-//            draw_box_width(sized, (int) (w * (b[(k * 5) + 0] - wo2)), (int) (h * (b[(k * 5) + 1] - ho2)),
-//                           (int) (w * (b[(k * 5) + 0] + wo2)), (int) (h * (b[(k * 5) + 1] + ho2)),
-//                           3, 0.0f, 255.0f, 0.0f);
-//        }
-//
-//        printf("orig: %dx%d\tcrop: %dx%d\tfile: %s\n", orig.w, orig.h, sized.w, sized.h, random_paths[i]);
-//        printf("ns: %dx%d\tnfs: %dx%d\td: (%d,%d)\tangle: %f(%f)\n", (int) nw, (int) nh, (int) not_rotated_w, (int) not_rotated_h,
-//               (int) dx, (int) dy, angle, bbAngle);
-//        show_image(orig, "orig", 1);
-//        show_image(sized, "crop", 1);
-//        cvWaitKey(0);
+        // convert angles
+//        const float bbAngle = atan2f(sinA * orig.w, cosA * orig.h);
+//        const float bbSinA = sinf(bbAngle);
+//        const float bbCosA = cosf(bbAngle);
+        fill_truth_detection(random_paths[i], boxes, d.y.vals[i], flip, dx, dy, nw, nh,
+                             sinA, cosA, orig, sized);
+
+        for (int k = 0; k < boxes; ++k) {
+            float *b = d.y.vals[i];
+            float wo2 = (b[(k * 5) + 2]) * 0.5f;
+            float ho2 = (b[(k * 5) + 3]) * 0.5f;
+            draw_box_width(sized, (int) (w * (b[(k * 5) + 0] - wo2)), (int) (h * (b[(k * 5) + 1] - ho2)),
+                           (int) (w * (b[(k * 5) + 0] + wo2)), (int) (h * (b[(k * 5) + 1] + ho2)),
+                           3, 0.0f, 255.0f, 0.0f);
+        }
+
+        printf("orig: %dx%d\tcrop: %dx%d\tfile: %s\n", orig.w, orig.h, sized.w, sized.h, random_paths[i]);
+        printf("ns: %dx%d\tnfs: %dx%d\td: (%d,%d)\tangle: %f\n", (int) nw, (int) nh, (int) not_rotated_w, (int) not_rotated_h,
+               (int) dx, (int) dy, angle);
+        show_image(orig, "orig", 1);
+        show_image(sized, "crop", 1);
+        cvWaitKey(0);
 
         free_image(orig);
     }

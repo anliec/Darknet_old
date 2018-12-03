@@ -38,6 +38,7 @@ image resize_max(image im, int max);
 void translate_image(image m, float s);
 void embed_image(image source, image dest, int dx, int dy);
 void place_image(image im, float w, float h, float dx, float dy, float angle, image canvas);
+void image_add_gaussian_white_noise(image im, float noise_scale);
 void saturate_image(image im, float sat);
 void exposure_image(image im, float sat);
 void distort_image(image im, float hue, float sat, float val);
