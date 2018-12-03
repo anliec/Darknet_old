@@ -176,7 +176,7 @@ void randomize_boxes(box_label *b, int n) {
     }
 }
 
-void correct_boxes_angle(box_label *boxes, int n, int dx, int dy, int sx, int sy, int flip, float sinA, float cosA, image orig, image sized) {
+void correct_boxes_angle(box_label *boxes, int n, float dx, float dy, float sx, float sy, int flip, float sinA, float cosA, image orig) {
     int i;
     for (i = 0; i < n; ++i) {
         if (boxes[i].x == 0 && boxes[i].y == 0) {
@@ -498,8 +498,8 @@ fill_truth_mask(char *path, int num_boxes, float *truth, int classes, int w, int
 }
 
 
-void fill_truth_detection(char *path, int num_boxes, float *truth, int flip, int dx, int dy, int sx, int sy,
-                          float sinA, float cosA, image orig, image sized) {
+void fill_truth_detection(char *path, int num_boxes, float *truth, int flip, float dx, float dy, float sx, float sy,
+                          float sinA, float cosA, image orig) {
     char labelpath[4096];
     find_replace(path, "images", "labels", labelpath);
     find_replace(labelpath, "JPEGImages", "labels", labelpath);
@@ -515,7 +515,7 @@ void fill_truth_detection(char *path, int num_boxes, float *truth, int flip, int
     int count = 0;
     box_label *boxes = read_boxes(labelpath, &count);
     randomize_boxes(boxes, count);
-    correct_boxes_angle(boxes, count, dx, dy, sx, sy, flip, sinA, cosA, orig, sized);
+    correct_boxes_angle(boxes, count, dx, dy, sx, sy, flip, sinA, cosA, orig);
     if (count > num_boxes) count = num_boxes;
     float x, y, w, h;
     int id;
@@ -1157,37 +1157,27 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, in
         if (flip) flip_image(sized);
         d.X.vals[i] = sized.data;
 
-        for (int k = 0; k < boxes; ++k) {
-            float *b = d.y.vals[i];
-            float wo2 = (b[(k * 5) + 2]) * 0.5f;
-            float ho2 = (b[(k * 5) + 3]) * 0.5f;
-            draw_box_width(orig, (int) (orig.w * (b[(k * 5) + 0] - wo2)), (int) (orig.h * (b[(k * 5) + 1] - ho2)),
-                           (int) (orig.w * (b[(k * 5) + 0] + wo2)), (int) (orig.h * (b[(k * 5) + 1] + ho2)),
-                           3, 0.0f, 255.0f, 0.0f);
-        }
-
         // convert angles
 //        const float bbAngle = atan2f(sinA * orig.w, cosA * orig.h);
 //        const float bbSinA = sinf(bbAngle);
 //        const float bbCosA = cosf(bbAngle);
-        fill_truth_detection(random_paths[i], boxes, d.y.vals[i], flip, dx, dy, nw, nh,
-                             sinA, cosA, orig, sized);
+        fill_truth_detection(random_paths[i], boxes, d.y.vals[i], flip, dx, dy, nw, nh, sinA, cosA, orig);
 
-        for (int k = 0; k < boxes; ++k) {
-            float *b = d.y.vals[i];
-            float wo2 = (b[(k * 5) + 2]) * 0.5f;
-            float ho2 = (b[(k * 5) + 3]) * 0.5f;
-            draw_box_width(sized, (int) (w * (b[(k * 5) + 0] - wo2)), (int) (h * (b[(k * 5) + 1] - ho2)),
-                           (int) (w * (b[(k * 5) + 0] + wo2)), (int) (h * (b[(k * 5) + 1] + ho2)),
-                           3, 0.0f, 255.0f, 0.0f);
-        }
-
-        printf("orig: %dx%d\tcrop: %dx%d\tfile: %s\n", orig.w, orig.h, sized.w, sized.h, random_paths[i]);
-        printf("ns: %dx%d\tnfs: %dx%d\td: (%d,%d)\tangle: %f\n", (int) nw, (int) nh, (int) not_rotated_w, (int) not_rotated_h,
-               (int) dx, (int) dy, angle);
-        show_image(orig, "orig", 1);
-        show_image(sized, "crop", 1);
-        cvWaitKey(0);
+//        for (int k = 0; k < boxes; ++k) {
+//            float *b = d.y.vals[i];
+//            float wo2 = (b[(k * 5) + 2]) * 0.5f;
+//            float ho2 = (b[(k * 5) + 3]) * 0.5f;
+//            draw_box_width(sized, (int) (w * (b[(k * 5) + 0] - wo2)), (int) (h * (b[(k * 5) + 1] - ho2)),
+//                           (int) (w * (b[(k * 5) + 0] + wo2)), (int) (h * (b[(k * 5) + 1] + ho2)),
+//                           3, 0.0f, 255.0f, 0.0f);
+//        }
+//
+//        printf("orig: %dx%d\tcrop: %dx%d\tfile: %s\n", orig.w, orig.h, sized.w, sized.h, random_paths[i]);
+//        printf("ns: %dx%d\tnfs: %dx%d\td: (%d,%d)\tangle: %f\n", (int) nw, (int) nh, (int) not_rotated_w, (int) not_rotated_h,
+//               (int) dx, (int) dy, angle);
+//        show_image(orig, "orig", 1);
+//        show_image(sized, "crop", 1);
+//        cvWaitKey(0);
 
         free_image(orig);
     }
