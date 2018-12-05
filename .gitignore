@@ -11,6 +11,7 @@
 !/Makefile
 !/CMakeLists.txt
 !/*.md
+!.gitignore
 
 !LICENSE.*
 
