@@ -630,16 +630,60 @@ image float_to_image(int w, int h, int c, float *data)
     return out;
 }
 
-void place_image(image im, int w, int h, int dx, int dy, image canvas)
+void place_image(image im, float w, float h, float dx, float dy, float angle, image canvas)
 {
     int x, y, c;
-    for(c = 0; c < im.c; ++c){
-        for(y = 0; y < h; ++y){
-            for(x = 0; x < w; ++x){
-                float rx = ((float)x / w) * im.w;
-                float ry = ((float)y / h) * im.h;
+    float cosA = cosf(angle), sinA = sinf(angle);
+
+    for(c = 0; c < canvas.c; ++c){
+        for(y = 0; y < canvas.h; ++y){
+            for(x = 0; x < canvas.w; ++x){
+                float rx_nr = ((float)x / canvas.w) * w;
+                float ry_nr = ((float)y / canvas.h) * h;
+                float rx = rx_nr * cosA - ry_nr * sinA + dx;
+                float ry = rx_nr * sinA + ry_nr * cosA + dy;
+                if(rx >= im.w || rx < 0 || ry >= im.h || ry < 0){
+                    set_pixel(canvas, x, y, c, 0.5);
+                    continue;
+                }
                 float val = bilinear_interpolate(im, rx, ry, c);
-                set_pixel(canvas, x + dx, y + dy, c, val);
+                set_pixel(canvas, x, y, c, val);
+            }
+        }
+    }
+}
+
+float gaussrandf()
+{
+    static float V1, V2, S;
+    static int phase = 0;
+    float X;
+
+    if(phase == 0) {
+        do {
+            float U1 = (float)rand() / RAND_MAX;
+            float U2 = (float)rand() / RAND_MAX;
+
+            V1 = 2 * U1 - 1;
+            V2 = 2 * U2 - 1;
+            S = V1 * V1 + V2 * V2;
+        } while(S >= 1 || S == 0);
+
+        X = V1 * sqrtf(-2 * logf(S) / S);
+    } else
+        X = V2 * sqrtf(-2 * logf(S) / S);
+
+    phase = 1 - phase;
+    return X;
+}
+
+void image_add_gaussian_white_noise(image im, float noise_scale){
+    for(int c = 0; c < im.c; ++c) {
+        for (int x = 0; x < im.w; ++x) {
+            for (int y = 0; y < im.h; ++y) {
+                float n = gaussrandf() * noise_scale;
+                float p = get_pixel(im, x, y, c);
+                set_pixel(im, x, y, c, p + n);
             }
         }
     }

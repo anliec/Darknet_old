@@ -136,7 +136,7 @@ void detections_to_rois(detection * dets, int det_count, char * rois, char * csv
             if(top + height > (int)video_height - 1) height = (int)video_height - 1 - top;
 
             sprintf(rois, "%s%s,%d,%d,%d,%d;", rois, video_detect_names[class], left, top, width, height);
-            sprintf(csv, "%s%07d.jpg,%s,%d,%d,%d,%d,%f\n", csv, frame_id, video_detect_names[class], left, top, width, height, dets[i].prob[j]);
+//            sprintf(csv, "%s%07d.jpg,%s,%d,%d,%d,%d,%f\n", csv, frame_id, video_detect_names[class], left, top, width, height, dets[i].prob[j]);
         }
     }
 }
@@ -151,21 +151,21 @@ void *write_in_thread(void * raw_args)
 {
     struct write_in_thread_args * args = raw_args;
     struct detection_list_element * cur_element = args->list_first_element;
-    char csv_out_file[256] = "";
-    strcpy(csv_out_file, args->output_json_file);
-    strcat(csv_out_file, ".csv");
-    FILE *csv = fopen(csv_out_file, "w");
+//    char csv_out_file[256] = "";
+//    strcpy(csv_out_file, args->output_json_file);
+//    strcat(csv_out_file, ".csv");
+//    FILE *csv = fopen(csv_out_file, "w");
     FILE *json = fopen(args->output_json_file, "w");
     if(json == NULL){
         printf("Cannot open file: '%s' !\n", args->output_json_file);
         exit(1);
     }
-    if(csv == NULL){
-        printf("Cannot open file: '%s' !\n", csv_out_file);
-        exit(1);
-    }
-    // print csv header to file
-    fprintf(csv, "image_id,sign_class,X,Y,W,H,confidence_level\n");
+//    if(csv == NULL){
+//        printf("Cannot open file: '%s' !\n", csv_out_file);
+//        exit(1);
+//    }
+//     print csv header to file
+//    fprintf(csv, "image_id,sign_class,X,Y,W,H,confidence_level\n");
 
     // write basic header:
     fprintf(json, "{\n"
@@ -211,7 +211,7 @@ void *write_in_thread(void * raw_args)
                           "                \"RoIs\": \"%s\"\n"
                           "            }", frame_number, rois);
 
-            fprintf(csv, "%s", csv_text);
+//            fprintf(csv, "%s", csv_text);
 
             frame_number++;
         }

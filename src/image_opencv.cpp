@@ -142,6 +142,14 @@ void close_video_stream(void * p)
     cap->release();
 }
 
+image cvGaussianBlur(image src, int kernelWidth, int kernelHeight, double sigmaX, double sigmaY){
+    Size kernel;
+    kernel.height = kernelHeight;
+    kernel.width = kernelWidth;
+    Mat m = image_to_mat(src);
+    GaussianBlur(m, m, kernel, sigmaX, sigmaY);
+    return mat_to_image(m);
+}
 
 }
 
