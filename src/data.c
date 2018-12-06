@@ -1269,7 +1269,8 @@ void *load_threads(void *ptr) {
     pthread_t *threads = calloc(args.threads, sizeof(pthread_t));
     for (i = 0; i < args.threads; ++i) {
         args.d = buffers + i;
-        args.n = (i + 1) * total / args.threads - i * total / args.threads;
+//        args.n = (i + 1) * total / args.threads - i * total / args.threads; // optimisation ?!
+        args.n = total / args.threads;
         threads[i] = load_data_in_thread(args);
     }
     for (i = 0; i < args.threads; ++i) {
