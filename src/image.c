@@ -635,8 +635,6 @@ void place_image(image im, float w, float h, float dx, float dy, float angle, im
     int x, y, c;
     float cosA = cosf(angle), sinA = sinf(angle);
 
-    int out = 0;
-
     for(c = 0; c < canvas.c; ++c){
         for(y = 0; y < canvas.h; ++y){
             for(x = 0; x < canvas.w; ++x){
@@ -645,7 +643,6 @@ void place_image(image im, float w, float h, float dx, float dy, float angle, im
                 float rx = rx_nr * cosA - ry_nr * sinA + dx;
                 float ry = rx_nr * sinA + ry_nr * cosA + dy;
                 if(rx >= im.w || rx < 0 || ry >= im.h || ry < 0){
-                    out++;
                     set_pixel(canvas, x, y, c, 0.5);
                     continue;
                 }
@@ -654,7 +651,6 @@ void place_image(image im, float w, float h, float dx, float dy, float angle, im
             }
         }
     }
-    printf("%d pixels out of the orig image !\n", out);
 }
 
 void gaussrandf(float *V1, float *V2)
