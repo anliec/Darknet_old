@@ -498,23 +498,8 @@ fill_truth_mask(char *path, int num_boxes, float *truth, int classes, int w, int
 }
 
 
-void fill_truth_detection(char *path, int num_boxes, float *truth, int flip, float dx, float dy, float sx, float sy,
-                          float sinA, float cosA, image orig) {
-    char labelpath[4096];
-    find_replace(path, "images", "labels", labelpath);
-    find_replace(labelpath, "JPEGImages", "labels", labelpath);
-
-    find_replace(labelpath, "raw", "labels", labelpath);
-//    find_replace(labelpath, ".jpg", ".txt", labelpath);
-//    find_replace(labelpath, ".png", ".txt", labelpath);
-//    find_replace(labelpath, ".JPG", ".txt", labelpath);
-//    find_replace(labelpath, ".JPEG", ".txt", labelpath);
-    char *last_dot = strrchr(labelpath, '.');
-    *last_dot = '\0'; // crop the string
-    strcat(labelpath, ".txt");
-    int count = 0;
-    box_label *boxes = read_boxes(labelpath, &count);
-    randomize_boxes(boxes, count);
+void fill_truth_detection(box_label *boxes, int count , int num_boxes, float *truth, int flip, float dx, float dy,
+                          float sx, float sy, float sinA, float cosA, image orig) {
     correct_boxes_angle(boxes, count, dx, dy, sx, sy, flip, sinA, cosA, orig);
     if (count > num_boxes) count = num_boxes;
     float x, y, w, h;
@@ -1077,7 +1062,7 @@ data load_data_swag(char **paths, int n, int classes, float jitter) {
     return d;
 }
 
-data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, int classes, float jitter, float hue,
+data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes, int classes, float jitter, float hue,
                          float saturation, float exposure) {
     char **random_paths = get_random_paths(paths, n, m);
     int i;
@@ -1090,7 +1075,7 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, in
 
     float net_ar = (float) w / (float) h;
 
-    d.y = make_matrix(n, 5 * boxes);
+    d.y = make_matrix(n, 5 * numBoxes);
     for (i = 0; i < n; ++i) {
         image orig = load_image_color(random_paths[i], 0, 0);
         image sized = make_image(w, h, orig.c);
@@ -1119,23 +1104,55 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, in
         const float max_possible_scale =
                 max_possible_scale_h < max_possible_scale_w ? max_possible_scale_h : max_possible_scale_w;
 
-        const float scale = rand_uniform(max_possible_scale * 0.70f, max_possible_scale);
+        const float scale = rand_uniform(max_possible_scale * 0.25f, max_possible_scale);
 //        const float scale = max_possible_scale;
         nh *= scale;
         nw *= scale;
 
+        ///Read bounding boxes labels
+        char labelpath[4096];
+        find_replace(random_paths[i], "images", "labels", labelpath);
+        find_replace(labelpath, "JPEGImages", "labels", labelpath);
+        find_replace(labelpath, "raw", "labels", labelpath);
+        char *last_dot = strrchr(labelpath, '.');
+        *last_dot = '\0'; // crop the string
+        strcat(labelpath, ".txt");
+        int count = 0;
+        box_label *boxes = read_boxes(labelpath, &count);
+        randomize_boxes(boxes, count);
+
         float min_dx, min_dy, max_dx, max_dy;
+        float encapsilating_box_w, encapsilating_box_h; //size of the none rotated box containing the rotated box
         if (angle > 0) {
             min_dx = nh * aSinA;
             min_dy = 0.0f;
-            max_dx = orig.w - nw * cosA;
-            max_dy = orig.h - nh * cosA - nw * aSinA;
+            encapsilating_box_w = nw * cosA;
+            encapsilating_box_h = nh * cosA + nw * aSinA;
+            max_dx = orig.w - encapsilating_box_w;
+            max_dy = orig.h - encapsilating_box_h;
         } else {
             min_dx = 0.0f;
             min_dy = nw * aSinA;
-            max_dx = orig.w - nw * cosA - nh * aSinA;
-            max_dy = orig.h - nh * cosA;
+            encapsilating_box_w = nw * cosA - nh * aSinA;
+            encapsilating_box_h = nh * cosA;
+            max_dx = orig.w - encapsilating_box_w;
+            max_dy = orig.h - encapsilating_box_h;
         }
+        if(rand() % 4 != 3 && count > 0){
+            // 75% chance of reducing the choice to include one sign
+            // box are randomized, so using the first one is fine
+            float min_dx_box, min_dy_box, max_dx_box, max_dy_box;
+            max_dx_box = boxes[0].x * orig.w;
+            max_dy_box = boxes[0].y * orig.h;
+            min_dx_box = max_dx_box - encapsilating_box_w;
+            min_dy_box = max_dy_box - encapsilating_box_h;
+            //update min and max
+            min_dx = (min_dx<min_dx_box) ? min_dx_box : min_dx;
+            min_dy = (min_dy<min_dy_box) ? min_dy_box : min_dy;
+            max_dx = (max_dx>max_dx_box) ? max_dx_box : max_dx;
+            max_dy = (max_dy>max_dy_box) ? max_dy_box : max_dy;
+        }
+
         const float dx = rand_uniform(min_dx, max_dx);
         const float dy = rand_uniform(min_dy, max_dy);
 
@@ -1157,13 +1174,9 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, in
         if (flip) flip_image(sized);
         d.X.vals[i] = sized.data;
 
-        // convert angles
-//        const float bbAngle = atan2f(sinA * orig.w, cosA * orig.h);
-//        const float bbSinA = sinf(bbAngle);
-//        const float bbCosA = cosf(bbAngle);
-        fill_truth_detection(random_paths[i], boxes, d.y.vals[i], flip, dx, dy, nw, nh, sinA, cosA, orig);
+        fill_truth_detection(boxes, count, numBoxes, d.y.vals[i], flip, dx, dy, nw, nh, sinA, cosA, orig);
 
-//        for (int k = 0; k < boxes; ++k) {
+//        for (int k = 0; k < numBoxes; ++k) {
 //            float *b = d.y.vals[i];
 //            float wo2 = (b[(k * 5) + 2]) * 0.5f;
 //            float ho2 = (b[(k * 5) + 3]) * 0.5f;
