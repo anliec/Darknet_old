@@ -1121,38 +1121,44 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
         box_label *boxes = read_boxes(labelpath, &count);
         randomize_boxes(boxes, count);
 
+        //find limit of the offset that keep the box inside the image
         float min_dx, min_dy, max_dx, max_dy;
-        float encapsilating_box_w, encapsilating_box_h; //size of the none rotated box containing the rotated box
+        float sizeRightOfLeftCorner, sizeBellowMainCorner, sizeLeftOfMainCorner, sizeTopOfMainCorner;
         if (angle > 0) {
-            min_dx = nh * aSinA;
-            min_dy = 0.0f;
-            encapsilating_box_w = nw * cosA;
-            encapsilating_box_h = nh * cosA + nw * aSinA;
-            max_dx = orig.w - encapsilating_box_w;
-            max_dy = orig.h - encapsilating_box_h;
+            sizeLeftOfMainCorner = nh * aSinA;
+            sizeTopOfMainCorner = 0.0f;
+            sizeRightOfLeftCorner = nw * cosA;
+            sizeBellowMainCorner = nh * cosA + nw * aSinA;
         } else {
-            min_dx = 0.0f;
-            min_dy = nw * aSinA;
-            encapsilating_box_w = nw * cosA - nh * aSinA;
-            encapsilating_box_h = nh * cosA;
-            max_dx = orig.w - encapsilating_box_w;
-            max_dy = orig.h - encapsilating_box_h;
+            sizeLeftOfMainCorner = 0.0f;
+            sizeTopOfMainCorner = nw * aSinA;
+            sizeRightOfLeftCorner = nw * cosA + nh * aSinA;
+            sizeBellowMainCorner = nh * cosA;
         }
+        min_dx = sizeLeftOfMainCorner;
+        min_dy = sizeTopOfMainCorner;
+        max_dx = orig.w - sizeRightOfLeftCorner;
+        max_dy = orig.h - sizeBellowMainCorner;
         if(rand() % 4 != 3 && count > 0){
             // 75% chance of reducing the choice to include one sign
             // box are randomized, so using the first one is fine
+            // we guaranty that the box is inside the unrotated window
+            // containing the actual window, the box may not be on the
+            // final  training image
             float min_dx_box, min_dy_box, max_dx_box, max_dy_box;
-            max_dx_box = boxes[0].x * orig.w;
-            max_dy_box = boxes[0].y * orig.h;
-            min_dx_box = max_dx_box - encapsilating_box_w;
-            min_dy_box = max_dy_box - encapsilating_box_h;
+            float signCenterX = boxes[0].x * orig.w;
+            float signCenterY = boxes[0].y * orig.h;
+            max_dx_box = signCenterX + sizeLeftOfMainCorner;
+            max_dy_box = signCenterY + sizeTopOfMainCorner;
+            min_dx_box = signCenterX - sizeRightOfLeftCorner;
+            min_dy_box = signCenterY - sizeBellowMainCorner;
             //update min and max
-            min_dx = (min_dx<min_dx_box) ? min_dx_box : min_dx;
-            min_dy = (min_dy<min_dy_box) ? min_dy_box : min_dy;
-            max_dx = (max_dx>max_dx_box) ? max_dx_box : max_dx;
-            max_dy = (max_dy>max_dy_box) ? max_dy_box : max_dy;
+            // min = max of mins   and   max = min of maxs
+            if(min_dx_box > min_dx) min_dx = min_dx_box;
+            if(min_dy_box > min_dy) min_dy = min_dy_box;
+            if(max_dx_box < max_dx) max_dx = max_dx_box;
+            if(max_dy_box < max_dy) max_dy = max_dy_box;
         }
-
         const float dx = rand_uniform(min_dx, max_dx);
         const float dy = rand_uniform(min_dy, max_dy);
 
@@ -1176,15 +1182,15 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
 
         fill_truth_detection(boxes, count, numBoxes, d.y.vals[i], flip, dx, dy, nw, nh, sinA, cosA, orig);
 
-//        for (int k = 0; k < numBoxes; ++k) {
-//            float *b = d.y.vals[i];
-//            float wo2 = (b[(k * 5) + 2]) * 0.5f;
-//            float ho2 = (b[(k * 5) + 3]) * 0.5f;
-//            draw_box_width(sized, (int) (w * (b[(k * 5) + 0] - wo2)), (int) (h * (b[(k * 5) + 1] - ho2)),
-//                           (int) (w * (b[(k * 5) + 0] + wo2)), (int) (h * (b[(k * 5) + 1] + ho2)),
-//                           3, 0.0f, 255.0f, 0.0f);
-//        }
-//
+        for (int k = 0; k < numBoxes; ++k) {
+            float *b = d.y.vals[i];
+            float wo2 = (b[(k * 5) + 2]) * 0.5f;
+            float ho2 = (b[(k * 5) + 3]) * 0.5f;
+            draw_box_width(sized, (int) (w * (b[(k * 5) + 0] - wo2)), (int) (h * (b[(k * 5) + 1] - ho2)),
+                           (int) (w * (b[(k * 5) + 0] + wo2)), (int) (h * (b[(k * 5) + 1] + ho2)),
+                           3, 0.0f, 255.0f, 0.0f);
+        }
+
 //        printf("orig: %dx%d\tcrop: %dx%d\tfile: %s\n", orig.w, orig.h, sized.w, sized.h, random_paths[i]);
 //        printf("ns: %dx%d\tnfs: %dx%d\td: (%d,%d)\tangle: %f\n", (int) nw, (int) nh, (int) not_rotated_w, (int) not_rotated_h,
 //               (int) dx, (int) dy, angle);

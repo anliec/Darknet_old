@@ -635,6 +635,8 @@ void place_image(image im, float w, float h, float dx, float dy, float angle, im
     int x, y, c;
     float cosA = cosf(angle), sinA = sinf(angle);
 
+    int out = 0;
+
     for(c = 0; c < canvas.c; ++c){
         for(y = 0; y < canvas.h; ++y){
             for(x = 0; x < canvas.w; ++x){
@@ -643,6 +645,7 @@ void place_image(image im, float w, float h, float dx, float dy, float angle, im
                 float rx = rx_nr * cosA - ry_nr * sinA + dx;
                 float ry = rx_nr * sinA + ry_nr * cosA + dy;
                 if(rx >= im.w || rx < 0 || ry >= im.h || ry < 0){
+                    out++;
                     set_pixel(canvas, x, y, c, 0.5);
                     continue;
                 }
@@ -651,38 +654,41 @@ void place_image(image im, float w, float h, float dx, float dy, float angle, im
             }
         }
     }
+    printf("%d pixels out of the orig image !\n", out);
 }
 
-float gaussrandf()
+void gaussrandf(float *V1, float *V2)
 {
-    static float V1, V2, S;
-    static int phase = 0;
-    float X;
+    float S;
 
-    if(phase == 0) {
-        do {
-            float U1 = (float)rand() / RAND_MAX;
-            float U2 = (float)rand() / RAND_MAX;
+    do {
+        float U1 = (float)rand() / RAND_MAX;
+        float U2 = (float)rand() / RAND_MAX;
 
-            V1 = 2 * U1 - 1;
-            V2 = 2 * U2 - 1;
-            S = V1 * V1 + V2 * V2;
-        } while(S >= 1 || S == 0);
+        *V1 = 2 * U1 - 1;
+        *V2 = 2 * U2 - 1;
+        S = *V1 * *V1 + *V2 * *V2;
+    } while(S >= 1 || S == 0);
 
-        X = V1 * sqrtf(-2 * logf(S) / S);
-    } else
-        X = V2 * sqrtf(-2 * logf(S) / S);
-
-    phase = 1 - phase;
-    return X;
+    *V1 = *V1 * sqrtf(-2 * logf(S) / S);
+    *V2 = *V2 * sqrtf(-2 * logf(S) / S);
 }
 
 void image_add_gaussian_white_noise(image im, float noise_scale){
+    float v1, v2, n, p;
+    char phase = 0;
     for(int c = 0; c < im.c; ++c) {
         for (int x = 0; x < im.w; ++x) {
             for (int y = 0; y < im.h; ++y) {
-                float n = gaussrandf() * noise_scale;
-                float p = get_pixel(im, x, y, c);
+                phase = (char)1 - phase;
+                if(phase){
+                    gaussrandf(&v1, &v2);
+                    n = v1 * noise_scale;
+                }
+                else{
+                    n = v2 * noise_scale;
+                }
+                p = get_pixel(im, x, y, c);
                 set_pixel(im, x, y, c, p + n);
             }
         }
