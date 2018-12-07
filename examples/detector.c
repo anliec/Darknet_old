@@ -53,7 +53,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
     args.d = &buffer;
     args.type = DETECTION_DATA;
     //args.type = INSTANCE_DATA;
-    args.threads = 64; // 64
+    args.threads = 16; // 64
 
     pthread_t load_thread = load_data(args);
     double time;
@@ -123,7 +123,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
         loss = train_network(net, train);
 #endif
         if (avg_loss < 0) avg_loss = loss;
-        avg_loss = avg_loss*.9f + loss*.1f;
+        avg_loss = avg_loss*.09f + loss*.01f;
 
         i = (int)get_current_batch(net);
         printf("%ld: %f, %f avg, %f rate, %lf seconds, %d images\n", get_current_batch(net), loss, avg_loss, get_current_rate(net), what_time_is_it_now()-time, i*imgs);

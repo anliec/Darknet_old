@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #ifdef OPENCV
 
@@ -1077,9 +1078,12 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
 
     d.y = make_matrix(n, 5 * numBoxes);
     for (i = 0; i < n; ++i) {
+//        clock_t clock_start = clock();
+
         image orig = load_image_color(random_paths[i], 0, 0);
         image sized = make_image(w, h, orig.c);
 
+//        clock_t clock_loaded = clock();
 //        const float angle = 0.f;
         const float angle = rand_uniform(-30.f*3.14f/360.f, 30.f*3.14f/360.f); // assume small angle (<<pi/2)
         const float cosA = cosf(angle), sinA = sinf(angle);
@@ -1162,10 +1166,16 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
         const float dx = rand_uniform(min_dx, max_dx);
         const float dy = rand_uniform(min_dy, max_dy);
 
+//        clock_t clock_param_found = clock();
+
         // copy pixels into the sized image
         place_image(orig, nw, nh, dx, dy, angle, sized);
 
+//        clock_t clock_place = clock();
+
         random_distort_image(sized, hue, saturation, exposure);
+
+//        clock_t clock_distord = clock();
 
 #ifdef OPENCV
         const int kernelHeight = (rand() % 3) * 2 + 1;
@@ -1174,13 +1184,32 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
         free_image(sized);
         sized = blurSized;
 #endif
+//        clock_t clock_blur = clock();
+
         image_add_gaussian_white_noise(sized, 0.02f * ((float)rand() / RAND_MAX));
+
+//        clock_t clock_noise = clock();
 
         const int flip = rand() % 2;
         if (flip) flip_image(sized);
         d.X.vals[i] = sized.data;
 
+//        clock_t clock_flip = clock();
+
         fill_truth_detection(boxes, count, numBoxes, d.y.vals[i], flip, dx, dy, nw, nh, sinA, cosA, orig);
+
+//        clock_t clock_boxes = clock();
+//        double tot_clock = clock_boxes - clock_start;
+//        printf("load %4f, param %4f, place %4f, distord %4f, blur %4f, noise %4f, flip %4f, box %4f, tot %4f s\n",
+//               (clock_loaded - clock_start) / tot_clock,
+//               (clock_param_found - clock_loaded) / tot_clock,
+//               (clock_place - clock_param_found) / tot_clock,
+//               (clock_distord - clock_place) / tot_clock,
+//               (clock_blur - clock_distord) / tot_clock,
+//               (clock_noise - clock_blur) / tot_clock,
+//               (clock_flip - clock_noise) / tot_clock,
+//               (clock_boxes - clock_flip) / tot_clock,
+//               tot_clock / CLOCKS_PER_SEC);
 
         for (int k = 0; k < numBoxes; ++k) {
             float *b = d.y.vals[i];
