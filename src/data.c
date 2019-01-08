@@ -1085,7 +1085,7 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
 
 //        clock_t clock_loaded = clock();
 //        const float angle = 0.f;
-        const float angle = rand_uniform(-30.f*3.14f/360.f, 30.f*3.14f/360.f); // assume small angle (<<pi/2)
+        const float angle = rand_uniform(-10.f*3.14f/360.f, 10.f*3.14f/360.f); // assume small angle (<<pi/2)
         const float cosA = cosf(angle), sinA = sinf(angle);
         const float aSinA = fabsf(sinA);
 
@@ -1108,7 +1108,7 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
         const float max_possible_scale =
                 max_possible_scale_h < max_possible_scale_w ? max_possible_scale_h : max_possible_scale_w;
 
-        const float scale = rand_uniform(max_possible_scale * 0.25f, max_possible_scale);
+        const float scale = rand_uniform(max_possible_scale * 0.50f, max_possible_scale);
 //        const float scale = max_possible_scale;
         nh *= scale;
         nw *= scale;
