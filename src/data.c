@@ -1186,7 +1186,7 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
 #endif
 //        clock_t clock_blur = clock();
 
-        image_add_gaussian_white_noise(sized, 0.005f * ((float)rand() / RAND_MAX));
+//        image_add_gaussian_white_noise(sized, 0.005f * ((float)rand() / RAND_MAX));
 
 //        clock_t clock_noise = clock();
 
