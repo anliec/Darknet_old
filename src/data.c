@@ -1085,7 +1085,7 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
 
 //        clock_t clock_loaded = clock();
 //        const float angle = 0.f;
-        const float angle = rand_uniform(-10.f*3.14f/360.f, 10.f*3.14f/360.f); // assume small angle (<<pi/2)
+        const float angle = rand_uniform(-20.f*3.14f/360.f, 20.f*3.14f/360.f); // assume small angle (<<pi/2)
         const float cosA = cosf(angle), sinA = sinf(angle);
         const float aSinA = fabsf(sinA);
 
@@ -1186,7 +1186,7 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
 #endif
 //        clock_t clock_blur = clock();
 
-//        image_add_gaussian_white_noise(sized, 0.005f * ((float)rand() / RAND_MAX));
+//        image_add_gaussian_white_noise(sized, 0.005f * ((float)rand() / RAND_MAX)); // removed: noise is useful for first layers, but they are already trained
 
 //        clock_t clock_noise = clock();
 
