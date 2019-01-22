@@ -1084,8 +1084,8 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
         image sized = make_image(w, h, orig.c);
 
 //        clock_t clock_loaded = clock();
-//        const float angle = 0.f;
-        const float angle = rand_uniform(-20.f*3.14f/360.f, 20.f*3.14f/360.f); // assume small angle (<<pi/2)
+        const float angle = 0.f;
+//        const float angle = rand_uniform(-20.f*3.14f/360.f, 20.f*3.14f/360.f); // assume small angle (<<pi/2)
         const float cosA = cosf(angle), sinA = sinf(angle);
         const float aSinA = fabsf(sinA);
 
