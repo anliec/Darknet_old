@@ -1177,13 +1177,13 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
 
 //        clock_t clock_distord = clock();
 
-#ifdef OPENCV
-        const int kernelHeight = (rand() % 3) * 2 + 1;
-        const int kernelWidth  = (rand() % 3) * 2 + 1;
-        image blurSized = cvGaussianBlur(sized, kernelWidth, kernelHeight, 0.0, 0.0);
-        free_image(sized);
-        sized = blurSized;
-#endif
+//#ifdef OPENCV
+//        const int kernelHeight = (rand() % 3) * 2 + 1;
+//        const int kernelWidth  = (rand() % 3) * 2 + 1;
+//        image blurSized = cvGaussianBlur(sized, kernelWidth, kernelHeight, 0.0, 0.0);
+//        free_image(sized);
+//        sized = blurSized;
+//#endif
 //        clock_t clock_blur = clock();
 
 //        image_add_gaussian_white_noise(sized, 0.005f * ((float)rand() / RAND_MAX)); // removed: noise is useful for first layers, but they are already trained
