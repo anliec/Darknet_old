@@ -1220,12 +1220,12 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int numBoxes,
                            3, 0.0f, 255.0f, 0.0f);
         }
 
-//        printf("orig: %dx%d\tcrop: %dx%d\tfile: %s\n", orig.w, orig.h, sized.w, sized.h, random_paths[i]);
-//        printf("ns: %dx%d\tnfs: %dx%d\td: (%d,%d)\tangle: %f\n", (int) nw, (int) nh, (int) not_rotated_w, (int) not_rotated_h,
-//               (int) dx, (int) dy, angle);
-//        show_image(orig, "orig", 1);
-//        show_image(sized, "crop", 1);
-//        cvWaitKey(0);
+        printf("orig: %dx%d\tcrop: %dx%d\tfile: %s\n", orig.w, orig.h, sized.w, sized.h, random_paths[i]);
+        printf("ns: %dx%d\tnfs: %dx%d\td: (%d,%d)\tangle: %f\n", (int) nw, (int) nh, (int) not_rotated_w, (int) not_rotated_h,
+               (int) dx, (int) dy, angle);
+        show_image(orig, "orig", 1);
+        show_image(sized, "crop", 1);
+        cvWaitKey(0);
 
         free_image(orig);
     }
