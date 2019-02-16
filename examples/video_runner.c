@@ -5,7 +5,7 @@
 int main(int argc, char** argv){
     if(argc != 8){
         printf("wrong argument count");
-        printf("expected: %s <config_file> <weights_file> <video_path> <classes_name_file> <classes_count(int)> <out_put_json_file> <decrypt_weight(int)>", argv[0]);
+        printf("expected: %s <config_file> <weights_file> <video_path> <classes_name_file> <classes_count(int)> <out_put_json_file> <decrypt_weight(int)>\n", argv[0]);
         exit(1);
     }
     int classes_count = atoi(argv[5]);
