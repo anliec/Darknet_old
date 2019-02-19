@@ -10,6 +10,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <opencv2/videoio/videoio_c.h>
+#include <libgen.h>
 
 #define DEMO 1
 
@@ -110,9 +111,11 @@ void *fetch_video_frame_in_thread(void *cap)
     return 0;
 }
 
-void detections_to_rois(detection * dets, int det_count, char * rois, char * csv, int frame_id)
+
+void detections_to_rois(detection * dets, int det_count, char * rois, char * signs)
 {
     int i,j;
+    char is_first_sign = 0;
 
     for(i = 0; i < det_count; ++i){
         int class = -1;
@@ -135,8 +138,18 @@ void detections_to_rois(detection * dets, int det_count, char * rois, char * csv
             if(top < 0) top = 0;
             if(top + height > (int)video_height - 1) height = (int)video_height - 1 - top;
 
+            if(is_first_sign == 0){
+                is_first_sign = 1;
+            }
+            else{
+                strcat(signs, ",\n");
+            }
+            sprintf(signs,"            {\"coordinates\": [%d,%d,%d,%d],\n"
+                          "             \"detection_confidence\": %f,\n"
+                          "             \"class\": %s\n"
+                          "            }", left, top, width, height, dets[i].prob[j], video_detect_names[class]);
+
             sprintf(rois, "%s%s,%d,%d,%d,%d;", rois, video_detect_names[class], left, top, width, height);
-//            sprintf(csv, "%s%07d.jpg,%s,%d,%d,%d,%d,%f\n", csv, frame_id, video_detect_names[class], left, top, width, height, dets[i].prob[j]);
         }
     }
 }
@@ -145,29 +158,22 @@ struct write_in_thread_args{
     struct detection_list_element * list_first_element;
     char * output_json_file;
     void * cap;
+    char * weightsPath;
 };
 
 void *write_in_thread(void * raw_args)
 {
     struct write_in_thread_args * args = raw_args;
     struct detection_list_element * cur_element = args->list_first_element;
-//    char csv_out_file[256] = "";
-//    strcpy(csv_out_file, args->output_json_file);
-//    strcat(csv_out_file, ".csv");
-//    FILE *csv = fopen(csv_out_file, "w");
     FILE *json = fopen(args->output_json_file, "w");
     if(json == NULL){
         printf("Cannot open file: '%s' !\n", args->output_json_file);
         exit(1);
     }
-//    if(csv == NULL){
-//        printf("Cannot open file: '%s' !\n", csv_out_file);
-//        exit(1);
-//    }
-//     print csv header to file
-//    fprintf(csv, "image_id,sign_class,X,Y,W,H,confidence_level\n");
 
     // write basic header:
+    time_t now;
+    time (&now);
     fprintf(json, "{\n"
                   "    \"output\": {\n"
                   "        \"video_cfg\": {\n"
@@ -177,13 +183,15 @@ void *write_in_thread(void * raw_args)
                   "            \"fps\": \"%f\",\n"
                   "            \"resolution\": \"%dx%d\"\n"
                   "        },\n"
-//                  "        \"framework\": {\n"
-//                  "            \"name\": \"darknet\",\n"
-//                  "            \"version\": \"2018mar01\",\n"
-//                  "            \"test_date\": \"30.10.2018 12:19:47\"\n"
-//                  "        },\n"
+                  "        \"framework\": {\n"
+                  "            \"name\": \"darknet\",\n"
+                  "            \"version\": \"%s\",\n"
+                  "            \"test_date\": \"%s\",\n"
+                  "            \"weights\": \"%s\"\n"
+                  "        },\n"
                   "        \"frames\": [\n",
-            get_cap_property(args->cap, CV_CAP_PROP_FPS), (int)video_width, (int)video_height);
+            get_cap_property(args->cap, CV_CAP_PROP_FPS), (int)video_width, (int)video_height, __DATE__, ctime(&now),
+            basename(args->weightsPath));
 
     int frame_number = 0;
 
@@ -200,18 +208,17 @@ void *write_in_thread(void * raw_args)
             free(old_element);
 
             char rois[512] = "";
-            char csv_text[1024] = "";
-            detections_to_rois(cur_element->dets, cur_element->nboxes, rois, csv_text, frame_number);
+            char signs[1024] = "";
+            detections_to_rois(cur_element->dets, cur_element->nboxes, rois, signs);
 
             if(frame_number != 0){
                 fprintf(json, ",\n");
             }
             fprintf(json, "            {\n"
                           "                \"frame_number\": \"%07d.jpg\",\n"
-                          "                \"RoIs\": \"%s\"\n"
-                          "            }", frame_number, rois);
-
-//            fprintf(csv, "%s", csv_text);
+                          "                \"RoIs\": \"%s\",\n"
+                          "                \"signs\": [%s]\n"
+                          "            }", frame_number, rois, signs);
 
             frame_number++;
         }
@@ -278,6 +285,7 @@ void detect_in_video(char *cfgfile, char *weightfile, float thresh, const char *
     writer_args.list_first_element = detection_list_head;
     writer_args.output_json_file = json_output_file;
     writer_args.cap = cap;
+    writer_args.weightsPath = weightfile;
     if(pthread_create(&write_thread, 0, write_in_thread, &writer_args)) error("Thread creation failed");
 
     video_detect_buff[0] = get_image_from_stream(cap);
