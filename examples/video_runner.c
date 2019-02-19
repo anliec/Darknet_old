@@ -12,5 +12,5 @@ int main(int argc, char** argv){
     int decrypt_weights = atoi(argv[7]);
     float thresh = 0.5;
     if (argc == 9) thresh = (float)atof(argv[8]);
-    detect_in_video(argv[1], argv[2], 0.5, argv[3], argv[4], classes_count, 0.5, argv[6], decrypt_weights);
+    detect_in_video(argv[1], argv[2], thresh, argv[3], argv[4], classes_count, 0.5, argv[6], decrypt_weights);
 }
