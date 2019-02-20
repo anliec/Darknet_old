@@ -146,7 +146,7 @@ void detections_to_rois(detection * dets, int det_count, char * rois, char * sig
             }
             sprintf(signs,"                    {\"coordinates\": [%d,%d,%d,%d],\n"
                           "                     \"detection_confidence\": %f,\n"
-                          "                     \"class\": %s\n"
+                          "                     \"class\": \"%s\"\n"
                           "                    }", left, top, width, height, dets[i].prob[j], video_detect_names[class]);
 
             sprintf(rois, "%s%s,%d,%d,%d,%d;", rois, video_detect_names[class], left, top, width, height);
