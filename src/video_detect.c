@@ -115,7 +115,7 @@ void *fetch_video_frame_in_thread(void *cap)
 void detections_to_rois(detection * dets, int det_count, char * rois, char * signs)
 {
     int i,j;
-    char is_first_sign = 0;
+    char is_first_sign = 1;
 
     for(i = 0; i < det_count; ++i){
         int class = -1;
@@ -138,16 +138,18 @@ void detections_to_rois(detection * dets, int det_count, char * rois, char * sig
             if(top < 0) top = 0;
             if(top + height > (int)video_height - 1) height = (int)video_height - 1 - top;
 
-            if(is_first_sign == 0){
-                is_first_sign = 1;
+            if(is_first_sign == 1){
+                is_first_sign = 0;
             }
             else{
-                strcat(signs, ",\n");
+                strcat(signs, ",");
             }
-            sprintf(signs,"                    {\"coordinates\": [%d,%d,%d,%d],\n"
+            sprintf(signs,"%s\n"
+                          "                    {\"coordinates\": [%d,%d,%d,%d],\n"
                           "                     \"detection_confidence\": %f,\n"
                           "                     \"class\": \"%s\"\n"
-                          "                    }", left, top, width, height, dets[i].prob[j], video_detect_names[class]);
+                          "                    }",
+                          signs, left, top, width, height, dets[i].prob[j], video_detect_names[class]);
 
             sprintf(rois, "%s%s,%d,%d,%d,%d;", rois, video_detect_names[class], left, top, width, height);
         }
@@ -221,7 +223,7 @@ void *write_in_thread(void * raw_args)
             fprintf(json, "            {\n"
                           "                \"frame_number\": \"%07d.jpg\",\n"
                           "                \"RoIs\": \"%s\",\n"
-                          "                \"signs\": [\n%s]\n"
+                          "                \"signs\": [%s]\n"
                           "            }", frame_number, rois, signs);
 
             frame_number++;
