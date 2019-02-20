@@ -144,10 +144,10 @@ void detections_to_rois(detection * dets, int det_count, char * rois, char * sig
             else{
                 strcat(signs, ",\n");
             }
-            sprintf(signs,"            {\"coordinates\": [%d,%d,%d,%d],\n"
-                          "             \"detection_confidence\": %f,\n"
-                          "             \"class\": %s\n"
-                          "            }", left, top, width, height, dets[i].prob[j], video_detect_names[class]);
+            sprintf(signs,"                    {\"coordinates\": [%d,%d,%d,%d],\n"
+                          "                     \"detection_confidence\": %f,\n"
+                          "                     \"class\": %s\n"
+                          "                    }", left, top, width, height, dets[i].prob[j], video_detect_names[class]);
 
             sprintf(rois, "%s%s,%d,%d,%d,%d;", rois, video_detect_names[class], left, top, width, height);
         }
@@ -174,6 +174,10 @@ void *write_in_thread(void * raw_args)
     // write basic header:
     time_t now;
     time (&now);
+    struct tm * timeinfo;
+    timeinfo = localtime (&now);
+    char timeText[128];
+    strftime(timeText, 128, "%A %d %B %Y, %H:%M", timeinfo);
     fprintf(json, "{\n"
                   "    \"output\": {\n"
                   "        \"video_cfg\": {\n"
@@ -190,7 +194,7 @@ void *write_in_thread(void * raw_args)
                   "            \"weights\": \"%s\"\n"
                   "        },\n"
                   "        \"frames\": [\n",
-            get_cap_property(args->cap, CV_CAP_PROP_FPS), (int)video_width, (int)video_height, __DATE__, ctime(&now),
+            get_cap_property(args->cap, CV_CAP_PROP_FPS), (int)video_width, (int)video_height, __DATE__, timeText,
             basename(args->weightsPath));
 
     int frame_number = 0;
@@ -217,7 +221,7 @@ void *write_in_thread(void * raw_args)
             fprintf(json, "            {\n"
                           "                \"frame_number\": \"%07d.jpg\",\n"
                           "                \"RoIs\": \"%s\",\n"
-                          "                \"signs\": [%s]\n"
+                          "                \"signs\": [\n%s]\n"
                           "            }", frame_number, rois, signs);
 
             frame_number++;
