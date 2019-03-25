@@ -70,6 +70,7 @@ void *detect_frame_in_thread(void *ptr)
 
     layer l = video_detect_net->layers[video_detect_net->n-1];
     float *X = video_detect_buff_letter[(video_detect_buff_index+2)%3].data;
+    show_image(video_detect_buff_letter[(video_detect_buff_index+2)%3], "image feed to yolo", 500);
     network_predict(video_detect_net, X);
 
 //    remember_network
